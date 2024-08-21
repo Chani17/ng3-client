@@ -4,16 +4,26 @@
     <div class="room-list">
       <div 
         class="room-box" 
-        v-for="(room, index) in rooms" 
+        v-for="(room, index) in paginatedRooms" 
         :key="index"
       >
         <div class="room-title">{{ room.title }}</div>
+        <div class="user-count">{{ room.users.length }} 명 / 6</div>
         <div class="user-list">
           <div v-for="(user, userIndex) in room.users" :key="userIndex">
             {{ user.nickname }}
           </div>
         </div>
       </div>
+    </div>
+    <div class="btn-cover">
+      <button :disabled="pageNum === 0" @click="prevPage" class="page-btn">
+        이전
+      </button>
+      <span class="page-count">{{ pageNum + 1 }} / {{ pageCount }} 페이지</span>
+      <button :disabled="pageNum >= pageCount - 1" @click="nextPage" class="page-btn">
+        다음
+      </button>
     </div>
   </div>
 </template>
@@ -24,6 +34,39 @@ export default {
     rooms: {
       type: Array,
       default: () => []
+    }
+  },
+  data() {
+    return {
+      pageNum: 0,
+      pageSize: 6,
+    };
+  },
+  computed: {
+    pageCount() {
+      return Math.ceil(this.rooms.length / this.pageSize);
+    },
+    paginatedRooms() {
+      const start = this.pageNum * this.pageSize;
+      const end = start + this.pageSize;
+      return this.rooms.slice(start, end);
+    }
+  },
+  methods: {
+    nextPage() {
+      if (this.pageNum < this.pageCount - 1) {
+        this.pageNum += 1;
+      }
+    },
+    prevPage() {
+      if (this.pageNum > 0) {
+        this.pageNum -= 1;
+      }
+    }
+  },
+  watch: {
+    rooms() {
+      this.pageNum = 0;  // rooms가 변경될 때 pageNum을 초기화
     }
   }
 };
@@ -60,5 +103,20 @@ export default {
 .user-list {
   display: flex;
   flex-direction: column;
+}
+
+.btn-cover {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.page-btn {
+  margin: 0 10px;
+}
+
+.page-count {
+  font-weight: bold;
 }
 </style>
