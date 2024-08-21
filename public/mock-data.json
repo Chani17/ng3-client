@@ -1,0 +1,44 @@
+[
+  {
+    "title": "방A",
+    "users": [
+      { "nickname": "유저1" },
+      { "nickname": "유저2" }
+    ]
+  },
+  {
+    "title": "방B",
+    "users": [
+      { "nickname": "유저3" },
+      { "nickname": "유저4" }
+    ]
+  },
+  {
+    "title": "방C",
+    "users": [
+      { "nickname": "유저5" },
+      { "nickname": "유저6" }
+    ]
+  },
+  {
+    "title": "방D",
+    "users": [
+      { "nickname": "유저7" },
+      { "nickname": "유저8" }
+    ]
+  },
+  {
+    "title": "방E",
+    "users": [
+      { "nickname": "유저9" },
+      { "nickname": "유저10" }
+    ]
+  },
+  {
+    "title": "방F",
+    "users": [
+      { "nickname": "유저11" },
+      { "nickname": "유저12" }
+    ]
+  }
+]

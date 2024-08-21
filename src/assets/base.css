@@ -1,0 +1,16 @@
+.header {
+    height: 100px;
+    border: 1px solid navy;
+}
+
+.middle {
+    height: 100px;
+    border: 1px solid navy;
+    min-height: 100px; /* 기본 사이즈 */
+    display: flex;
+}
+
+.footer {
+    height: 600px;
+    border: 1px solid navy;
+}

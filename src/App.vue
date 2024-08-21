@@ -1,28 +1,29 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div style="width: 1024px; margin: 0 auto; border: 1px solid navy">
+    <router-view v-if="isRoute"></router-view> <!-- / 를 제외한 라우트 페이지 렌더링 -->
+    <main-page v-else></main-page> <!-- 기본적으로 / 경로 -->
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import MainPage from './components/pages/MainPage.vue';
 
 export default {
   name: 'App',
-  components: {
-    HelloWorld
+  components: { MainPage },
+  computed: {
+    isRoute() {
+      // 현재 경로가 라우트 페이지인지 확인, 루트 ("/") 페이지 아니면 isRoute()가 true
+      return this.$route.path !== '/'; 
+    }
   }
-}
+};
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
+@import '@/assets/base.css';
+
+div {
   color: #2c3e50;
-  margin-top: 60px;
 }
 </style>
