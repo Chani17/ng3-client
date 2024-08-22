@@ -2,18 +2,13 @@
   <div class="footer">
     <h3>방 목록</h3>
     <div class="room-list">
-      <div 
-        class="room-box" 
-        v-for="(room, index) in paginatedRooms" 
-        :key="index"
-      >
+      <div class="room-box" v-for="(room, index) in paginatedRooms" :key="index">
         <div class="room-title">{{ room.title }}</div>
+        <!-- 비밀방 여부 표시 -->
+        <div v-if="room.password !== ''" class="room-status">비밀방</div>
+        <div v-else class="room-status">공개방</div>
+        <div class="room-status">진행 상태 : {{ room.status }}</div>
         <div class="user-count">{{ room.users.length }} 명 / 6</div>
-        <div class="user-list">
-          <div v-for="(user, userIndex) in room.users" :key="userIndex">
-            {{ user.nickname }}
-          </div>
-        </div>
       </div>
     </div>
     <div class="btn-cover">
@@ -21,7 +16,11 @@
         이전
       </button>
       <span class="page-count">{{ pageNum + 1 }} / {{ pageCount }} 페이지</span>
-      <button :disabled="pageNum >= pageCount - 1" @click="nextPage" class="page-btn">
+      <button
+        :disabled="pageNum >= pageCount - 1"
+        @click="nextPage"
+        class="page-btn"
+      >
         다음
       </button>
     </div>
@@ -33,8 +32,8 @@ export default {
   props: {
     rooms: {
       type: Array,
-      default: () => []
-    }
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -50,7 +49,7 @@ export default {
       const start = this.pageNum * this.pageSize;
       const end = start + this.pageSize;
       return this.rooms.slice(start, end);
-    }
+    },
   },
   methods: {
     nextPage() {
@@ -62,13 +61,13 @@ export default {
       if (this.pageNum > 0) {
         this.pageNum -= 1;
       }
-    }
+    },
   },
   watch: {
     rooms() {
-      this.pageNum = 0;  // rooms가 변경될 때 pageNum을 초기화
-    }
-  }
+      this.pageNum = 0; // rooms가 변경될 때 pageNum을 초기화
+    },
+  },
 };
 </script>
 

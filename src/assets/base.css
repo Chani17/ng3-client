@@ -1,16 +1,16 @@
 .header {
-    height: 100px;
-    border: 1px solid navy;
+    height: 10vh; /* 기존 100px을 화면 높이의 10%로 변경 */
+    /* border: 1px solid navy; */
 }
 
 .middle {
-    height: 100px;
-    border: 1px solid navy;
-    min-height: 100px; /* 기본 사이즈 */
+    height: 10vh; /* 기존 100px을 화면 높이의 10%로 변경 */
+    /* border: 1px solid navy; */
+    min-height: 10vh; /* 기본 사이즈로 화면 높이의 10% */
     display: flex;
 }
 
 .footer {
-    height: 600px;
-    border: 1px solid navy;
+    height: 60vh; /* 기존 600px을 화면 높이의 60%로 변경 */
+    /* border: 1px solid navy; */
 }

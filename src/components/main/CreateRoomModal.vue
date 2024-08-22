@@ -2,16 +2,12 @@
   <div v-if="showModal" class="modal-overlay">
     <div class="modal-content">
       <h2>방 만들기</h2>
-      <input v-model="roomTitle" placeholder="방 제목을 입력하세요" />
+      <input v-model="roomTitle" placeholder="방 제목을 입력하세요." />
 
       <!-- 비밀방 체크박스 -->
       <div class="checkbox">
-        <input 
-          type="checkbox" 
-          id="privateRoom" 
-          v-model="isPrivateRoom" 
-        />
-        <label for="privateRoom">비밀방</label>
+        <input type="checkbox" id="private-room" v-model="isPrivateRoom" />
+        <label for="private-room">비밀방</label>
       </div>
 
       <!-- 비밀번호 입력 (비활성화/활성화) -->
