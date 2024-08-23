@@ -1,5 +1,6 @@
 [
   {
+    "id": 1,
     "title": "방A",
     "password": "",
     "status": "ready",
@@ -10,6 +11,7 @@
     ]
   },
   {
+    "id": 2,
     "title": "방B",
     "password": "123",
     "status": "start",
@@ -19,6 +21,7 @@
     ]
   },
   {
+    "id": 3,
     "title": "방C",
     "password": "",
     "status": "ready",
@@ -30,6 +33,7 @@
     ]
   },
   {
+    "id": 4,
     "title": "방D",
     "password": "",
     "status": "ready",
@@ -39,6 +43,7 @@
     ]
   },
   {
+    "id": 5,
     "title": "방E",
     "password": "123",
     "status": "start",
@@ -49,6 +54,7 @@
     ]
   },
   {
+    "id": 6,
     "title": "방F",
     "password": "",
     "status": "ready",
@@ -58,6 +64,7 @@
     ]
   },
   {
+    "id": 7,
     "title": "방G",
     "password": "123",
     "status": "start",
@@ -69,6 +76,7 @@
     ]
   },
   {
+    "id": 8,
     "title": "방H",
     "password": "",
     "status": "ready",
@@ -79,6 +87,7 @@
     ]
   },
   {
+    "id": 9,
     "title": "방I",
     "password": "",
     "status": "ready",
@@ -90,6 +99,7 @@
     ]
   },
   {
+    "id": 10,
     "title": "방J",
     "password": "",
     "status": "ready",
@@ -99,6 +109,7 @@
     ]
   },
   {
+    "id": 11,
     "title": "방K",
     "password": "123",
     "status": "start",
@@ -109,6 +120,7 @@
     ]
   },
   {
+    "id": 12,
     "title": "방L",
     "password": "",
     "status": "ready",
@@ -120,6 +132,7 @@
     ]
   },
   {
+    "id": 13,
     "title": "방M",
     "password": "",
     "status": "ready",
@@ -129,6 +142,7 @@
     ]
   },
   {
+    "id": 14,
     "title": "방N",
     "password": "123",
     "status": "start",
@@ -140,6 +154,7 @@
     ]
   },
   {
+    "id": 15,
     "title": "방O",
     "password": "",
     "status": "ready",
@@ -150,6 +165,7 @@
     ]
   },
   {
+    "id": 16,
     "title": "방P",
     "password": "123",
     "status": "start",
@@ -159,6 +175,7 @@
     ]
   },
   {
+    "id": 17,
     "title": "방Q",
     "password": "",
     "status": "ready",
@@ -169,6 +186,7 @@
     ]
   },
   {
+    "id": 18,
     "title": "방R",
     "password": "123",
     "status": "start",
@@ -179,6 +197,7 @@
     ]
   },
   {
+    "id": 19,
     "title": "방S",
     "password": "",
     "status": "ready",
@@ -188,6 +207,7 @@
     ]
   },
   {
+    "id": 20,
     "title": "방T",
     "password": "",
     "status": "ready",

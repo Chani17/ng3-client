@@ -1,5 +1,5 @@
 <template>
-  <div style="width: 1024px; margin: 0 auto; border: 1px solid navy">
+  <div class="container">
     <router-view v-if="isRoute"></router-view> <!-- / 를 제외한 라우트 페이지 렌더링 -->
     <main-page v-else></main-page> <!-- 기본적으로 / 경로 -->
   </div>
@@ -21,9 +21,14 @@ export default {
 </script>
 
 <style>
-@import '@/assets/base.css';
+@import './assets/base.css';
 
-div {
-  color: #2c3e50;
+.container {
+  margin: 0 auto;
+  border: 15px solid transparent; /* 기본 보더는 투명하게 설정 */
+  border-image-source: url('./assets/giraffe-pattern.jpg'); /* 기린 무늬 패턴 이미지 */
+  border-image-slice: 30; /* 이미지를 30 픽셀 단위로 잘라서 사용 */
+  border-image-repeat: round; /* 이미지를 보더 전체에 반복 */
+  border-image-width: 15px; /* 보더 이미지의 두께 */
 }
 </style>

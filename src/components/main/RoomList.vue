@@ -2,13 +2,14 @@
   <div class="footer">
     <h3>방 목록</h3>
     <div class="room-list">
-      <div class="room-box" v-for="(room, index) in paginatedRooms" :key="index">
+      <div class="room-box" v-for="(room, id) in paginatedRooms" :key="id">
         <div class="room-title">{{ room.title }}</div>
-        <!-- 비밀방 여부 표시 -->
-        <div v-if="room.password !== ''" class="room-status">비밀방</div>
-        <div v-else class="room-status">공개방</div>
-        <div class="room-status">진행 상태 : {{ room.status }}</div>
-        <div class="user-count">{{ room.users.length }} 명 / 6</div>
+        <div class="game-status">진행 상태: {{ room.status }}</div>
+        <div class="room-box-footer">
+          <div class="user-count">👥 {{ room.users.length }} / 6 명</div>
+          <!-- 비밀방 여부 표시 -->
+          <div v-if="room.password !== ''" class="room-privacy">🔒</div>
+        </div>
       </div>
     </div>
     <div class="btn-cover">
@@ -71,11 +72,7 @@ export default {
 };
 </script>
 
-<style>
-.footer {
-  padding: 20px;
-}
-
+<style scoped>
 .room-list {
   display: flex;
   flex-wrap: wrap;
@@ -85,23 +82,49 @@ export default {
 }
 
 .room-box {
-  width: 45%;
-  height: auto; /* 높이를 자동으로 조절 */
-  border: 1px solid black;
+  width: 48%; /* 화면에 두 개씩 맞추기 위해 조정 */
+  border-radius: 10px; /* 둥근 모서리 */
+  background-color: #fff5cc; /* 밝은 노란색 배경 */
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 효과 */
+  color: #8e735b; /* 갈색 텍스트 */
+  padding: 15px;
+  margin: 10px 0;
   display: flex;
-  flex-direction: column; /* 방 제목과 유저 목록을 세로로 배치 */
-  margin: 10px;
-  padding: 10px;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer; /* 마우스를 올렸을 때 포인터로 변경 */
+}
+
+.room-box:hover {
+  transform: scale(1.03); /* 호버 시 살짝 확대 */
+  box-shadow: 2px 2px 15px rgba(0, 0, 0, 0.2); /* 호버 시 그림자 강화 */
 }
 
 .room-title {
+  font-size: 1.2em;
   font-weight: bold;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
-.user-list {
+.room-privacy {
+  font-weight: bold;
+  color: #d98880; /* 밝은 빨간색 */
+  margin-bottom: 5px;
+}
+
+.game-status {
+  font-weight: bold;
+  color: #82ae46; /* 녹색 */
+  margin-top: 5px;
+}
+
+.room-box-footer {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
+  font-weight: bold;
+  color: #f4d03f; /* 노란색 */
+  margin-top: 10px;
 }
 
 .btn-cover {
@@ -112,10 +135,27 @@ export default {
 }
 
 .page-btn {
+  background-color: #f9e79f; /* 부드러운 노란색 */
+  border: none;
+  padding: 8px;
   margin: 0 10px;
+  color: #8e735b; /* 갈색 텍스트 */
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.page-btn:hover {
+  background-color: #f7dc6f; /* 호버 시 더 진한 노란색 */
+}
+
+.page-btn:disabled {
+  background-color: #d5dbdb; /* 비활성화된 버튼 색상 */
+  color: #aab7b8; /* 비활성화된 버튼 텍스트 색상 */
 }
 
 .page-count {
   font-weight: bold;
+  color: #8e735b; /* 갈색 텍스트 */
 }
 </style>

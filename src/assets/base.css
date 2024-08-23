@@ -1,16 +1,18 @@
 .header {
-    height: 10vh; /* 기존 100px을 화면 높이의 10%로 변경 */
-    /* border: 1px solid navy; */
-}
+    height: 10vh;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2vh 1vw;
+  }
 
 .middle {
     height: 10vh; /* 기존 100px을 화면 높이의 10%로 변경 */
-    /* border: 1px solid navy; */
     min-height: 10vh; /* 기본 사이즈로 화면 높이의 10% */
     display: flex;
 }
 
 .footer {
-    height: 60vh; /* 기존 600px을 화면 높이의 60%로 변경 */
-    /* border: 1px solid navy; */
+    height: 76.8vh; /* 기존 600px을 화면 높이의 60%로 변경 */
+    padding: 2vh 1vw;
 }
