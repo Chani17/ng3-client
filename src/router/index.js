@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import LoginView from '@/views/LoginView.vue';
+import MainPage from '@/views/MainPage.vue';
 
 Vue.use(VueRouter);
 
@@ -14,6 +15,10 @@ export const router = new VueRouter({
     {
       path: '/login',
       component: LoginView,
+    },
+    {
+      path: '/main',
+      component: MainPage,
     },
   ],
 });

@@ -1,0 +1,7 @@
+.base_container {
+  background-image: url('@/assets/image/baseContainer.jpg');
+  background-repeat: no-repeat;
+  border-radius: 25px;
+  width: 1500px;
+  height: 900px;
+}
