@@ -2,34 +2,25 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import axios from 'axios';
 
-
 Vue.use(Vuex);
 
 export const store = new Vuex.Store({
   state: {
-    //1. state 는 data()와 같은것
     roomList: [],
     totalItemCount: 0,
     totalPageCount: 0,
     page: 0,
+    showModal: false,
+    searchType: 'title',
+    searchKeyword: '',
   },
   getters: {
-    // getRooms: (state) => {
-    //   return (page = 0) => {
-    //     if (page > state.totalPageCount) {
-    //       page = state.totalPageCount;
-    //     }
-    //     const offset = page * 6;
-    //     return state.roomList.slice(offset, offset + 6);
-    //   };
-    // }
     getRooms(state) {
       let page = state.page;
-      if (page > state.totalPageCount) {
-        page = state.totalPageCount;
+      if (page >= state.totalPageCount) {
+        page = state.totalPageCount - 1;  // 페이지 번호가 총 페이지 수를 넘지 않도록 보정
       }
-      console.log(page, state.totalPageCount);
-  
+
       const offset = page * 6;
       return state.roomList.slice(offset, offset + 6);
     },
@@ -39,9 +30,17 @@ export const store = new Vuex.Store({
     getTotalPageCount(state) {
       return state.totalPageCount;
     },
+    getShowModal(state) {
+      return state.showModal;
+    },
+    getSearchType(state) {
+      return state.searchType;
+    },
+    getSearchKeyword(state) {
+      return state.searchKeyword;
+    }
   },
   mutations: {
-    //3. mutations는 method과 같은것. 주로 state에 있는 값에 변화를 주기 위해 사용한다.
     setRoom(state, roomList) {
       state.roomList = roomList;
     },
@@ -53,30 +52,68 @@ export const store = new Vuex.Store({
     },
     setPage(state, page) {
       state.page = page;
-    }
+    },
+    setShowModal(state, showModal) {
+      state.showModal = showModal;
+    },
+    setSearchType(state, searchType) {
+      state.searchType = searchType;
+    },
+    setSearchKeyword(state, searchKeyword) {
+      state.searchKeyword = searchKeyword;
+    },
   },
   actions: {
-    // 1. fetchroom 요청하는 함수
-    async fetchRoom({ commit }) {
+    async fetchRoom({ commit, state }) {
       try {
         // API 요청 후 roomList 받아서 배열로 가공
-        const response = await axios.get('/mock-data.json'); // fetchRoom() API endpoint
-        const roomList = response.data; // API response data
-        commit('setTotalItemCount', roomList.length);
+        const response = await axios.get('/mock-data.json');
+        let roomList = response.data;
 
-        let calculatedPage = roomList.length % 6;
-
-        if (calculatedPage == 0) {
-          commit('setTotalPageCount', calculatedPage);
+        let filteredRooms = [];
+        if (state.searchKeyword === '') {
+          // 검색어가 비어 있으면 전체 방 목록 사용
+          filteredRooms = roomList;
         } else {
-          commit('setTotalPageCount', calculatedPage + 1);
+          if (state.searchType === "title") {
+            filteredRooms = roomList.filter((room) =>
+              room.title.includes(state.searchKeyword)
+            );
+          } else if (state.searchType === "nickname") {
+            filteredRooms = roomList.filter((room) =>
+              room.users.some((user) =>
+                user.nickname.includes(state.searchKeyword)
+              )
+            );
+          }
         }
 
-        // console.log(roomList);
-        commit('setRoom', roomList);
+        commit('setRoom', filteredRooms);
+        commit('setTotalItemCount', filteredRooms.length);
+
+        // 총 페이지 수 계산 (최소 1페이지는 있어야 함)
+        const totalPageCount = Math.ceil(filteredRooms.length / 6);
+        commit('setTotalPageCount', totalPageCount);
+
+        // 현재 페이지 보정 (총 페이지 수를 넘지 않도록)
+        if (state.page >= totalPageCount && totalPageCount > 0) {
+          commit('setPage', totalPageCount - 1);
+        } else if (totalPageCount === 0) {
+          // 검색 결과가 없는 경우 페이지를 0으로 설정
+          commit('setPage', 0);
+        }
+
       } catch (error) {
-        console.error('fetchRoom error:', error);
+        console.error('에러 발생', error);
       }
+    },
+    setSearchType({ commit, dispatch }, searchType) {
+      commit('setSearchType', searchType);
+      dispatch('fetchRoom'); // searchType이 변경될 때마다 데이터 패칭
+    },
+    setSearchKeyword({ commit, dispatch }, searchKeyword) {
+      commit('setSearchKeyword', searchKeyword);
+      dispatch('fetchRoom'); // searchKeyword가 변경될 때마다 데이터 패칭
     },
     // 2. fetchroom을 주기적으로 날리는 함수
     // 메인페이지 접속했을 때 실행
@@ -101,6 +138,12 @@ export const store = new Vuex.Store({
         page = 0;
       }
       commit('setPage', page);
-    }
+    },
+    showModal({ commit }) {
+      commit('setShowModal', true);
+    },
+    hideModal({ commit }) {
+      commit('setShowModal', false);
+    },
   },
 });
