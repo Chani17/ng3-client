@@ -1,38 +1,32 @@
 <template>
   <div class="middleContainer">
-    <button class="createRoomButton" @click="showModal">방만들기</button>
+    <button class="createRoomButton" @click="showCreateRoomModal">
+      방만들기
+    </button>
     <SearchBox></SearchBox>
   </div>
 </template>
 
 <script>
-import { mapGetters, mapActions } from "vuex"; 
+import { mapActions } from "vuex";
 import SearchBox from "@/components/main/SearchBox.vue";
 
 export default {
-  created() {
-
-},
-
-  computed: {
-    ...mapGetters({
-    
-    }),
-  },
   methods: {
     ...mapActions({
-        showModal: "showModal",
+      showCreateRoomModal: "showCreateRoomModal",
     }),
   },
   components: {
-    SearchBox
-  }
+    SearchBox,
+  },
 };
 </script>
 
-
 <style>
 .middleContainer {
-    margin: 0px 60px;
+  display: flex;
+  justify-content: space-between;
+  margin: 0px 60px;
 }
 </style>

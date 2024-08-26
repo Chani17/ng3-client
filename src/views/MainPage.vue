@@ -3,7 +3,7 @@
     <HeaderComponent></HeaderComponent>
     <MiddleComponent></MiddleComponent>
     <RoomList></RoomList>
-    <CreateRoomModal v-if="getShowModal"></CreateRoomModal>
+    <CreateRoomModal v-if="getShowCreateRoomModal"></CreateRoomModal>
   </div>
 </template>
 
@@ -24,14 +24,15 @@ export default {
     //getters는 computed에 넣는다.
     ...mapGetters({
       getRooms: "getRooms",
-      getShowModal: "getShowModal",
+      getShowCreateRoomModal: "getShowCreateRoomModal",
+      
     }),
   },
   methods: {
     ...mapActions({
       createRoom: "createRoom",
-      showModal: "showModal",
-      hideModal: "hideModal",
+      showCreateRoomModal: "showCreateRoomModal",
+      hideCreateRoomModal: "hideCreateRoomModal",
     }),
   },
 

@@ -1,15 +1,16 @@
 <template>
   <div class="createRoomModal">
-    <input type="text" placeholder="방제목" id="title" />
-    <input type="text" placeholder="비밀번호" id="password" v-if="isPrivate" />
+    <input type="text" placeholder="방제목" id="title" ref="titleInput" />
+    <input type="text" placeholder="비밀번호" id="password" v-if="isPrivate" ref="passwordInput"/>
     <input type="checkbox" @change="togglePrivate" />비밀방
     <button @click="createRoom">방 생성</button>
-    <button @click="hideModal">닫기</button>
+    <button @click="hideCreateRoomModal">닫기</button>
   </div>
 </template>
 
 <script>
 import { mapGetters, mapActions } from "vuex";
+// import axios from "axios";
 
 export default {
   created() {},
@@ -23,31 +24,21 @@ export default {
   },
   methods: {
     ...mapActions({
-      hideModal: "hideModal",
+      hideCreateRoomModal: "hideCreateRoomModal",
     }),
-    createRoom() {
-      const title = document.getElementById("title");
-      const password = document.getElementById("password");
-
-      if (title && password) {
-        const title = title.value;
-        let password = password.value;
-
-        if (password.length < 1 || password === null) {
-          password.value = "";
-        }
+    async createRoom() {
+      try {
+        const titleInput = this.$refs.titleInput;
+        const passwordInput = this.$refs.passwordInput;
+        const title = titleInput ? titleInput.value : "";
+        const password = passwordInput ? passwordInput.value : "";
+        const roomId = 35; // 임시로 db에서 pk 보내줬다고 가정
+        this.$router.push(`/room/${roomId}`);
         console.log(title, password);
-      } else {
-        console.error("Title 또는 Password 요소를 찾을 수 없습니다.");
+        this.hideCreateRoomModal();
+      } catch (error) {
+        console.error("방 생성 중 오류가 발생했습니다.", error);
       }
-      console.log(title, password);
-
-      // axios post 리퀘 날려야 함 (방번호 pk 응답으로 받아야 함)
-      // const response = await axios.post("/api/rooms/", { title, password });
-
-      // 받은 방 번호로 라우팅
-      // this.$router.push(`/rooms/${response.data.pk}`);
-      this.hideModal();
     },
     togglePrivate() {
       this.isPrivate = !this.isPrivate;

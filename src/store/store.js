@@ -10,9 +10,11 @@ export const store = new Vuex.Store({
     totalItemCount: 0,
     totalPageCount: 0,
     page: 0,
-    showModal: false,
+    showCreateRoomModal: false,   // 방 생성 모달 상태
+    showPasswordCheckModal: false, // 비밀번호 확인 모달 상태
     searchType: 'title',
     searchKeyword: '',
+    nowRoom: '',
   },
   getters: {
     getRooms(state) {
@@ -20,7 +22,6 @@ export const store = new Vuex.Store({
       if (page >= state.totalPageCount) {
         page = state.totalPageCount - 1;  // 페이지 번호가 총 페이지 수를 넘지 않도록 보정
       }
-
       const offset = page * 6;
       return state.roomList.slice(offset, offset + 6);
     },
@@ -30,15 +31,21 @@ export const store = new Vuex.Store({
     getTotalPageCount(state) {
       return state.totalPageCount;
     },
-    getShowModal(state) {
-      return state.showModal;
+    getShowCreateRoomModal(state) {
+      return state.showCreateRoomModal;
+    },
+    getShowPasswordCheckModal(state) {
+      return state.showPasswordCheckModal;
     },
     getSearchType(state) {
       return state.searchType;
     },
     getSearchKeyword(state) {
       return state.searchKeyword;
-    }
+    },
+    getNowRoom(state) {
+      return state.nowRoom;
+    },
   },
   mutations: {
     setRoom(state, roomList) {
@@ -53,14 +60,20 @@ export const store = new Vuex.Store({
     setPage(state, page) {
       state.page = page;
     },
-    setShowModal(state, showModal) {
-      state.showModal = showModal;
+    setShowCreateRoomModal(state, showCreateRoomModal) {
+      state.showCreateRoomModal = showCreateRoomModal;
+    },
+    setShowPasswordCheckModal(state, showPasswordCheckModal) {
+      state.showPasswordCheckModal = showPasswordCheckModal;
     },
     setSearchType(state, searchType) {
       state.searchType = searchType;
     },
     setSearchKeyword(state, searchKeyword) {
       state.searchKeyword = searchKeyword;
+    },
+    setNowRoom(state, roomId) {
+      state.nowRoom = roomId;
     },
   },
   actions: {
@@ -139,11 +152,20 @@ export const store = new Vuex.Store({
       }
       commit('setPage', page);
     },
-    showModal({ commit }) {
-      commit('setShowModal', true);
+    showCreateRoomModal({ commit }) {
+      commit('setShowCreateRoomModal', true);
     },
-    hideModal({ commit }) {
-      commit('setShowModal', false);
+    hideCreateRoomModal({ commit }) {
+      commit('setShowCreateRoomModal', false);
+    },
+    showPasswordCheckModal({ commit }) {
+      commit('setShowPasswordCheckModal', true);
+    },
+    hidePasswordCheckModal({ commit }) {
+      commit('setShowPasswordCheckModal', false);
+    },
+    setNowRoom({ commit }, roomId) {
+      commit('setNowRoom', roomId);
     },
   },
 });

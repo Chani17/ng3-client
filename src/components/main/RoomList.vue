@@ -1,20 +1,38 @@
 <template>
   <div class="roomListContainer">
-    <div v-for="room in this.getRooms" :key="room.id" class="roomBox">
-      <div>{{ room.title }}</div>
-      <div>진행 상태 : {{ room.status }}</div>
-      <div>{{ room.users.length }} / 6</div>
-      <div v-if="room.password != ''">🔒</div>
+    <div class="room-list">
+      <div
+        v-for="room in getRooms"
+        :key="room.id"
+        class="roomBox"
+        @click="handleRoomClick(room)"
+      >
+        <div>{{ room.title }}</div>
+        <div>진행 상태 : {{ room.status }}</div>
+        <div class="roomBoxFooter">
+          <div>{{ room.users.length }} / 6</div>
+          <div v-if="room.password">🔒</div>
+        </div>
+      </div>
     </div>
-    <br>
-    <button @click="decreasePage" :disabled="getPage === 0">이전</button>
-    {{ getPage + 1 }} / {{ getTotalPageCount || 1 }}
-    <button @click="increasePage" :disabled="getPage >= getTotalPageCount - 1">다음</button>
+    <div class="pagingButtonGroup">
+      <button @click="decreasePage" :disabled="getPage === 0">이전</button>
+      {{ getPage + 1 }} / {{ getTotalPageCount || 1 }}
+      <button
+        @click="increasePage"
+        :disabled="getPage >= getTotalPageCount - 1"
+      >
+        다음
+      </button>
+    </div>
+
+    <RoomPasswordCheckModal v-if="getShowPasswordCheckModal" />
   </div>
 </template>
 
 <script>
 import { mapGetters, mapActions } from "vuex";
+import RoomPasswordCheckModal from "@/components/main/RoomPasswordCheckModal.vue";
 
 export default {
   computed: {
@@ -22,13 +40,29 @@ export default {
       getRooms: "getRooms",
       getPage: "getPage",
       getTotalPageCount: "getTotalPageCount",
+      getShowPasswordCheckModal: "getShowPasswordCheckModal",
     }),
   },
   methods: {
     ...mapActions({
       increasePage: "increasePage",
       decreasePage: "decreasePage",
+      setNowRoom: "setNowRoom",
+      checkRoomPassword: "checkRoomPassword",
+      showPasswordCheckModal: "showPasswordCheckModal",
+      hidePasswordCheckModal: "hidePasswordCheckModal",
     }),
+    handleRoomClick(room) {
+      this.setNowRoom(room.id);
+      if (room.password) {
+        this.showPasswordCheckModal();
+      } else {
+        this.$router.push(`/room/${room.id}`);
+      }
+    },
+  },
+  components: {
+    RoomPasswordCheckModal,
   },
 };
 </script>
@@ -38,20 +72,37 @@ export default {
   border: 1px solid black;
   margin: 0px 60px;
   height: 400px;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  box-sizing: border-box;
+}
 
-  display: flex; /* 컨테이너를 flexbox로 설정 */
-  flex-wrap: wrap; /* 아이템들이 줄 바꿈되도록 설정 */
-  gap: 10px; /* 아이템 간의 간격 설정 */
-  padding: 10px; /* 컨테이너 내부의 여백 설정 */
-  box-sizing: border-box; /* 패딩과 테두리를 포함한 전체 너비/높이 계산 */
+.room-list {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .roomBox {
   border: 1px solid black;
-  flex: 1 1 calc(50% - 10px); /* 각 아이템의 너비를 50%에서 gap의 절반만큼 뺀 크기로 설정 */
-  box-sizing: border-box; /* 패딩과 테두리를 포함한 전체 너비/높이 계산 */
-  padding: 10px; /* 아이템 내부 여백 설정 */
-  text-align: center; /* 텍스트를 중앙 정렬 */
-  max-width: calc(50% - 10px);
+  flex: 1 1 calc(50% - 10px);
+  box-sizing: border-box;
+  padding: 10px;
+
+  width: 50%;
 }
+
+.roomBoxFooter {
+  display: flex;
+  justify-content: space-between;
+}
+
+.pagingButtonGroup {
+  margin: 1.5rem 0;
+  display: flex;
+  justify-content: center;
+}
+
 </style>
