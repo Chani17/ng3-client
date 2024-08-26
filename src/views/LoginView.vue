@@ -3,8 +3,8 @@
     <!--하얀 배경-->
     <div class="sketchBookImg">
       <!--스케치북-->
-      <router-link to="#" class="loginBtn">
-        <img src="../assets/google.png" />
+      <router-link to="/main" class="loginBtn">
+        <img src="../assets/image/google.png" />
         <span>구글 계정으로 시작하기</span>
       </router-link>
     </div>
@@ -31,13 +31,13 @@ export default {};
 }
 
 .sketchBookImg {
-  background-image: url('../assets/sketchBookLogin.jpg');
+  background-image: url('../assets/image/sketchBookLogin.jpg');
   background-size: 250%;
-  background-position: center; /* whiteboard 중앙에 배치 */
+  background-position: center;
   background-repeat: no-repeat;
   width: 100%;
   height: 100%;
-  position: relative; /* sketchBookImg를 기준으로 버튼 배치 */
+  position: relative;
   left: 10px;
 }
 
