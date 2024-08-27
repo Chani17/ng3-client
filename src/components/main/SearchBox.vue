@@ -29,12 +29,15 @@ export default {
     }),
     ...mapActions({
       fetchRoom: "fetchRoom",
+      filterRooms: "filterRooms",  // filterRooms 액션을 불러오기
     }),
     updateSearchType(event) {
       this.setSearchType(event.target.value);
+      this.filterRooms(); // searchType 변경 후 필터링
     },
     updateSearchKeyword(event) {
       this.setSearchKeyword(event.target.value);
+      this.filterRooms(); // searchKeyword 변경 후 필터링
     },
   },
 };

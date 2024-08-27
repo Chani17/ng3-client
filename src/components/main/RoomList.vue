@@ -8,7 +8,7 @@
         @click="handleRoomClick(room)"
       >
         <div>{{ room.title }}</div>
-        <div>진행 상태 : {{ room.status }}</div>
+        <div>진행 상태 : {{ room.state }}</div>
         <div class="roomBoxFooter">
           <div>{{ room.users.length }} / 6</div>
           <div v-if="room.password">🔒</div>
@@ -53,11 +53,12 @@ export default {
       hidePasswordCheckModal: "hidePasswordCheckModal",
     }),
     handleRoomClick(room) {
-      this.setNowRoom(room.id);
+      const roomId = room.id;
+      this.setNowRoom(roomId);
       if (room.password) {
         this.showPasswordCheckModal();
       } else {
-        this.$router.push(`/room/${room.id}`);
+        this.$router.push(`/room/${roomId}`);
       }
     },
   },
