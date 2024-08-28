@@ -1,6 +1,8 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import LoginView from '@/views/LoginView.vue';
+import MainPage from '@/views/MainPage.vue';
+import GamePage from '@/views/GamePage.vue';
 
 Vue.use(VueRouter);
 
@@ -14,6 +16,16 @@ export const router = new VueRouter({
     {
       path: '/login',
       component: LoginView,
+    },
+    {
+      path: '/main',
+      component: MainPage,
+    },
+    {
+      path: '/room/:roomId',
+      name: 'gamePage',
+      component: GamePage,
+      props: true,
     },
   ],
 });
