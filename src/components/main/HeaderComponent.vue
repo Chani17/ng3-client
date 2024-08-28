@@ -1,8 +1,10 @@
 <template>
   <div class="headerContainer">
-    <router-link to="#">갤러리 | </router-link>
-    <router-link to="#">팔로우 | </router-link>
-    <router-link to="#">마이페이지</router-link>
+    <div class="router-box">
+      <router-link to="#">갤러리 | </router-link>
+      <router-link to="#">팔로우 | </router-link>
+      <router-link to="#">마이페이지</router-link>
+    </div>
   </div>
 </template>
 
@@ -12,8 +14,22 @@ export default {};
 
 <style scoped>
 .headerContainer {
-  border: 1px solid black;
-  margin: 150px 60px;
-  text-align: right;
+  border: none;
+  margin: 0 60px;
+  margin-top: 180px;
+  margin-bottom: 20px;
+}
+
+.router-box {
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  gap: 10px;
+  margin: 0 52px;
+}
+
+a {
+  color: #333;
+  text-decoration: none;
 }
 </style>

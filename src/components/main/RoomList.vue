@@ -1,17 +1,19 @@
 <template>
   <div class="roomListContainer">
-    <div class="room-list">
-      <div
-        v-for="room in getRooms"
-        :key="room.id"
-        class="roomBox"
-        @click="handleRoomClick(room)"
-      >
-        <div>{{ room.title }}</div>
-        <div>진행 상태 : {{ room.state }}</div>
-        <div class="roomBoxFooter">
-          <div>{{ room.users.length }} / 6</div>
-          <div v-if="room.password">🔒</div>
+    <div class="list-box">
+      <div class="room-list">
+        <div
+          v-for="room in getRooms"
+          :key="room.id"
+          class="roomBox"
+          @click="handleRoomClick(room)"
+        >
+          <div>{{ room.title }}</div>
+          <div>진행 상태 : {{ room.state }}</div>
+          <div class="roomBoxFooter">
+            <div>{{ room.users.length }} / 6</div>
+            <div v-if="room.password">🔒</div>
+          </div>
         </div>
       </div>
     </div>
@@ -56,8 +58,8 @@ export default {
       const roomId = room.id;
       const roomState = room.state;
 
-      if(roomState == 'START') {
-        alert('게임이 시작된 상태입니다.');
+      if (roomState == "START") {
+        alert("게임이 시작된 상태입니다.");
         return;
       }
 
@@ -77,40 +79,111 @@ export default {
 
 <style scoped>
 .roomListContainer {
-  border: 1px solid black;
-  margin: 0px 60px;
-  height: 400px;
+  border: 3px solid #a55905;
+  border-radius: 20px;
+  box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1);
+  max-width: 85%;
   display: flex;
   flex-direction: column;
-  padding: 10px;
+  height: auto;
   box-sizing: border-box;
+  margin: 0 auto; /* 수평 가운데 정렬 */
+  align-items: center; /* 내부 요소 가운데 정렬 */
+  /* height: 480px; */
+}
+
+.list-box {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 440px;
 }
 
 .room-list {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  gap: 10px;
+  margin: 20px;
+  gap: 20px;
+  justify-content: space-between;
+  margin-bottom: 20px;
 }
 
 .roomBox {
-  border: 1px solid black;
-  flex: 1 1 calc(50% - 10px);
+  width: 48%;
+  border: 2px solid #a55905;
+  border-radius: 15px;
+  background-color: #fffec8;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 10px 10px 0 10px;
   box-sizing: border-box;
-  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
 
-  width: 50%;
+.roomBox:hover {
+  transform: translateY(-5px);
+  box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.roomBox div:first-child {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #a55905;
+}
+
+.roomBox div {
+  margin-bottom: 5px;
 }
 
 .roomBoxFooter {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+}
+
+.roomBoxFooter div:first-child {
+  font-weight: bold;
+  color: #333;
+}
+
+.roomBoxFooter div:last-child {
+  font-size: 1.2rem;
+  color: #a55905;
 }
 
 .pagingButtonGroup {
-  margin: 1.5rem 0;
   display: flex;
   justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  font-size: 18px;
+  font-weight: bolder;
+  margin-bottom: 20px;
 }
 
+.pagingButtonGroup button {
+  border: 2px solid #a55905;
+  background-color: #ffffff;
+  padding: 8px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.pagingButtonGroup button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagingButtonGroup button:not(:disabled):hover {
+  background-color: #a55905;
+  color: #ffffff;
+}
 </style>
