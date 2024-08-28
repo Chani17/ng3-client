@@ -22,7 +22,7 @@ body {
 }
 body {
   /*기린 무느의 배경화면*/
-  background-image: url('../src/assets/image/backgroundImg.jpg');
+  background-image: url('@/assets/image/backgroundImg.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

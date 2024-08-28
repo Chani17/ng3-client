@@ -1,9 +1,9 @@
-import Vue from 'vue';
-import VueRouter from 'vue-router';
+import NotFoundView from '@/components/common/NotFoundView.vue';
+import GamePage from '@/views/GamePage.vue';
 import LoginView from '@/views/LoginView.vue';
 import MainPage from '@/views/MainPage.vue';
-import GamePage from '@/views/GamePage.vue';
-import NotFoundView from '@/components/common/NotFoundView.vue';
+import Vue from 'vue';
+import VueRouter from 'vue-router';
 
 Vue.use(VueRouter);
 
@@ -25,9 +25,10 @@ export const router = new VueRouter({
       component: MainPage,
     },
     {
-      path: '/game/:roomId',
-      name: 'GamePage',
+      path: '/room/:roomId',
+      name: 'gamePage',
       component: GamePage,
+      props: true,
     },
     {
       path: '*',

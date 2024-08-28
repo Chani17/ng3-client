@@ -1,13 +1,26 @@
 <template>
   <div class="base_container">
-    {{ loginUserId }}
+    <HeaderComponent></HeaderComponent>
+    <MiddleComponent></MiddleComponent>
+    <RoomList></RoomList>
+    <CreateRoomModal v-if="getShowCreateRoomModal"></CreateRoomModal>
   </div>
 </template>
 
 <script>
-import { mapMutations, mapGetters } from 'vuex';
+import "@/assets/css/base_container.css"; //스케치북 모양 레이아웃 적용 위한 css
+import { mapGetters, mapMutations } from 'vuex';
+
+import CreateRoomModal from "@/components/main/CreateRoomModal.vue";
+import HeaderComponent from "@/components/main/HeaderComponent.vue";
+import MiddleComponent from "@/components/main/MiddleComponent.vue";
+import RoomList from "@/components/main/RoomList.vue";
+
 
 export default {
+  created() {
+    this.$store.dispatch("startPolling");
+  },
   mounted() {
     this.checkToken();
     //this.loginUserId
@@ -15,11 +28,18 @@ export default {
   computed: {
     ...mapGetters({
       loginUserId: 'getLoginUserId',
+      getRooms: "getRooms",
+      getShowCreateRoomModal: "getShowCreateRoomModal",
     }),
   },
   methods: {
     ...mapMutations({
       setLoginUserId: 'setLoginUserId',
+    }),
+    ...mapActions({
+      createRoom: "createRoom",
+      showCreateRoomModal: "showCreateRoomModal",
+      hideCreateRoomModal: "hideCreateRoomModal",
     }),
 
     async checkToken() {
@@ -93,8 +113,14 @@ export default {
         console.error('Email not found in token payload');
       }
     },
-  },
+    components: {
+      HeaderComponent,
+      MiddleComponent,
+      RoomList,
+      CreateRoomModal,
+    },
+  }
 };
 </script>
 
-<style></style>
+<style scoped></style>

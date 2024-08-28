@@ -4,7 +4,7 @@
     <div class="sketchBookImg">
       <!--스케치북-->
       <div class="loginBtn" @click="login">
-        <img src="../assets/image/google.png" />
+        <img src="@/assets/image/google.png" />
         <span>구글 계정으로 시작하기</span>
       </div>
     </div>
@@ -44,7 +44,7 @@ export default {
 }
 
 .sketchBookImg {
-  background-image: url('../assets/image/sketchBookLogin.jpg');
+  background-image: url('@/assets/image/sketchBookLogin.jpg');
   background-size: 250%;
   background-position: center;
   background-repeat: no-repeat;

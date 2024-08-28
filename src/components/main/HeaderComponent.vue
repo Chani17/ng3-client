@@ -13,9 +13,7 @@ export default {};
 <style scoped>
 .headerContainer {
   border: 1px solid black;
+  margin: 150px 60px;
   text-align: right;
-  width: 100%;
-  height: 5%;
-  position: absolute;
 }
 </style>
