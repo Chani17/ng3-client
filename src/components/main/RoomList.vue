@@ -54,6 +54,13 @@ export default {
     }),
     handleRoomClick(room) {
       const roomId = room.id;
+      const roomState = room.state;
+
+      if(roomState == 'START') {
+        alert('게임이 시작된 상태입니다.');
+        return;
+      }
+
       this.setNowRoom(roomId);
       if (room.password) {
         this.showPasswordCheckModal();
