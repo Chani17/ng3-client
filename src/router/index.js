@@ -16,14 +16,17 @@ export const router = new VueRouter({
     },
     {
       path: '/login',
+      name: 'LoginView',
       component: LoginView,
     },
     {
       path: '/main',
+      name: 'MainPage',
       component: MainPage,
     },
     {
       path: '/game/:roomId',
+      name: 'GamePage',
       component: GamePage,
     },
     {

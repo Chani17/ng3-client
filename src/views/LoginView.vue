@@ -15,9 +15,14 @@
 export default {
   methods: {
     login() {
-      //OAuth2 로그인 엔드포인트로 리다이렉트
-      window.location.href =
-        'http://localhost:8080/oauth2/authorization/google';
+      const storedToken = localStorage.getItem('token');
+      if (storedToken) {
+        //토큰이 있다면 바로 main으로 가게
+        this.$router.push('/main');
+      } else {
+        window.location.href = //토큰이 없다면 토큰을 token을 발급받고 main에서 localStorage에 넣게
+          'http://localhost:8080/oauth2/authorization/google';
+      }
     },
   },
 };
