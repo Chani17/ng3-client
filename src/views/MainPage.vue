@@ -113,13 +113,13 @@ export default {
         console.error('Email not found in token payload');
       }
     },
-    components: {
-      HeaderComponent,
-      MiddleComponent,
-      RoomList,
-      CreateRoomModal,
-    },
-  }
+  },
+  components: {
+    HeaderComponent,
+    MiddleComponent,
+    RoomList,
+    CreateRoomModal,
+  },
 };
 </script>
 
