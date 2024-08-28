@@ -10,7 +10,7 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-// import axios from "axios";
+import axios from "axios";
 
 export default {
   created() {},
@@ -32,7 +32,15 @@ export default {
         const passwordInput = this.$refs.passwordInput;
         const title = titleInput ? titleInput.value : "";
         const password = passwordInput ? passwordInput.value : "";
-        const roomId = 35; // 임시로 db에서 pk 보내줬다고 가정
+        // 요청 데이터 준비
+        const requestData = { title, password };
+
+        // 서버에 POST 요청
+        const response = await axios.post("http://localhost:8080/room", requestData);
+
+        // 서버에서 반환된 방 ID
+        const roomId = parseInt(response.data.roomId);
+
         this.$router.push(`/room/${roomId}`);
         console.log(title, password);
         this.hideCreateRoomModal();
