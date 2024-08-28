@@ -4,7 +4,7 @@ import Vuex from "vuex";
 
 Vue.use(Vuex);
 
-export const store_lhl = new Vuex.Store({
+export const store = new Vuex.Store({
   state: {
     roomList: [],
     filteredRoomList: [], // 필터링된 방 목록
