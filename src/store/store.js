@@ -270,14 +270,6 @@ export const store = new Vuex.Store({
   setNowRoom({ commit }, roomId) {
     commit("setNowRoom", roomId);
   },
-    setSearchKeyword({ commit, dispatch }, searchKeyword) {
-      commit("setSearchKeyword", searchKeyword);
-      dispatch("filterRooms"); // 검색어 변경 시 필터링 로직 실행
-    },
-    setSearchType({ commit, dispatch }, searchType) {
-      commit("setSearchType", searchType); // 검색 타입 변경 시 필터링 로직 실행
-      dispatch("filterRooms");
-    },
     startPolling({ dispatch, commit, state }) {
       if (!state.pollingIntervalId) {
         const intervalId = setInterval(() => {
@@ -291,21 +283,6 @@ export const store = new Vuex.Store({
         clearInterval(state.pollingIntervalId); // Interval 중지
         commit("setPollingInterval", null); // Interval ID 초기화
       }
-    },
-    showCreateRoomModal({ commit }) {
-      commit("setShowCreateRoomModal", true);
-    },
-    hideCreateRoomModal({ commit }) {
-      commit("setShowCreateRoomModal", false);
-    },
-    showPasswordCheckModal({ commit }) {
-      commit("setShowPasswordCheckModal", true);
-    },
-    hidePasswordCheckModal({ commit }) {
-      commit("setShowPasswordCheckModal", false);
-    },
-    setNowRoom({ commit }, roomId) {
-      commit("setNowRoom", roomId);
     },
     // 팔로우
     async searchUsers({ commit, dispatch }, search) {
