@@ -22,6 +22,11 @@ export const store = new Vuex.Store({
     // phj
     loginUserId: "", //현재 로그인된 유저 ID
     likeStatuses: {},
+    userSearch: "",
+    users: [],
+    followIds: [],
+    following: [],
+    pollingIntervalId: null, // 타이머 ID를 저장할 상태 추가
   },
   getters: {
     sortedItems(state) {
@@ -71,6 +76,20 @@ export const store = new Vuex.Store({
     getLoginUserId(state) {
       //이걸로 이제 현재 로그인된 유저 아이디를 불러올 수 있음
       return state.loginUserId;
+    },
+    // 팔로우
+    getFilteredUsers(state) {
+      if (!Array.isArray(state.following)) {
+        return [];
+      }
+      if (state.userSearch.trim() === '') {
+        return state.following.sort((a, b) => b.totalLikes - a.totalLikes);
+      } else {
+        return state.users.filter(user => user.nickname === state.userSearch);
+      }
+    },
+    getFollowing: (state) => (userId) => {
+      return state.followIds.includes(userId);
     },
   },
   mutations: {
@@ -133,21 +152,50 @@ export const store = new Vuex.Store({
         commit("SET_INDEX", state.currentIndex - state.itemsPerPage);
       }
     },
+    // 팔로우
+    setUserSearch(state, search) {
+      state.userSearch = search;
+    },
+    setUsers(state, users) {
+      state.users = users;
+    },
+    setFollowUsers(state, users) {
+      if (Array.isArray(users)) {
+        state.following = users;
+        state.followIds = users.map(user => user.email);
+      } else {
+        state.following = [];
+        state.followIds = [];
+      }
+    },
+    setFollow(state, userId) {
+      if (!state.followIds.includes(userId)) {
+        state.followIds.push(userId);
+      }
+    },
+    setUnfollow(state, userId) {
+      state.followIds = state.followIds.filter(id => id !== userId);
+    },
+    setPollingInterval(state, intervalId) {
+      state.pollingIntervalId = intervalId; // pollingIntervalId를 저장
+    },
+  },
+  actions: {
+    async fetchRoom({ commit, dispatch }) {
+      try {
+        const response = await axios.get("http://localhost:8080/room");
+        commit("setRoom", response.data);
+        dispatch("filterRooms"); // 데이터를 가져온 후 필터링을 초기화
+        console.log("fetchRoom 실행")
+      } catch (error) {
+        console.error("에러 발생", error);
+      }
+    },
     scrollRight({ commit, state }) {
       if (state.currentIndex + state.itemsPerPage < state.images.length) {
         commit("SET_INDEX", state.currentIndex + state.itemsPerPage);
       }
     },
-    async fetchRoom({ commit, dispatch }) {
-    // dispatch 추가
-    try {
-      const response = await axios.get("http://localhost:8080/room");
-      commit("setRoom", response.data);
-      dispatch("filterRooms"); // 데이터를 가져온 후 필터링을 초기화
-    } catch (error) {
-      console.error("에러 발생", error);
-    }
-  },
   filterRooms({ commit, state }) {
     let filteredRoomList = state.roomList;
     if (state.searchKeyword !== "") {
@@ -222,5 +270,90 @@ export const store = new Vuex.Store({
   setNowRoom({ commit }, roomId) {
     commit("setNowRoom", roomId);
   },
-}
+    setSearchKeyword({ commit, dispatch }, searchKeyword) {
+      commit("setSearchKeyword", searchKeyword);
+      dispatch("filterRooms"); // 검색어 변경 시 필터링 로직 실행
+    },
+    setSearchType({ commit, dispatch }, searchType) {
+      commit("setSearchType", searchType); // 검색 타입 변경 시 필터링 로직 실행
+      dispatch("filterRooms");
+    },
+    startPolling({ dispatch, commit, state }) {
+      if (!state.pollingIntervalId) {
+        const intervalId = setInterval(() => {
+          dispatch("fetchRoom");
+        }, 5000);
+        commit("setPollingInterval", intervalId); // Interval ID를 저장
+      }
+    },
+    stopPolling({ commit, state }) {
+      if (state.pollingIntervalId) {
+        clearInterval(state.pollingIntervalId); // Interval 중지
+        commit("setPollingInterval", null); // Interval ID 초기화
+      }
+    },
+    showCreateRoomModal({ commit }) {
+      commit("setShowCreateRoomModal", true);
+    },
+    hideCreateRoomModal({ commit }) {
+      commit("setShowCreateRoomModal", false);
+    },
+    showPasswordCheckModal({ commit }) {
+      commit("setShowPasswordCheckModal", true);
+    },
+    hidePasswordCheckModal({ commit }) {
+      commit("setShowPasswordCheckModal", false);
+    },
+    setNowRoom({ commit }, roomId) {
+      commit("setNowRoom", roomId);
+    },
+    // 팔로우
+    async searchUsers({ commit, dispatch }, search) {
+      commit('setUserSearch', search);
+      try {
+        if (search.trim === '') {
+          await dispatch('fetchFollowing');
+        } else {
+          const response = await axios.get('http://localhost:8080/usersearch', { params: { nickname: search } });
+          commit('setUsers', response.data);
+        }
+      } catch (error) {
+        console.error("Error searching users", error);
+      }
+    },
+    async fetchFollowing({ commit, getters }) {
+      try {
+        const loginEmail = getters.getLoginUserId;
+        const response = await axios.get('http://localhost:8080/following', { params: { userEmail: loginEmail } });
+        if (Array.isArray(response.data)) {
+          commit('setFollowUsers', response.data);
+        } else {
+          commit('setFollowUsers', []);
+        }
+      } catch (error) {
+        console.error("Error fetching followed users", error);
+        commit('setFollowUsers', []);
+      }
+    },
+    async followUser({ commit, getters, dispatch }, followEmail) {
+      try {
+        const loginEmail = getters.getLoginUserId;
+        await axios.post('http://localhost:8080/followuser', { userEmail: loginEmail, followingEmail: followEmail });
+        commit('setFollow', followEmail);
+        await dispatch('fetchFollowing');
+      } catch (error) {
+        console.error("Error add follow:", error);
+      }
+    },
+    async unfollowUser({ commit, getters, dispatch }, followEmail) {
+      try {
+        const loginEmail = getters.getLoginUserId;
+        await axios.post('http://localhost:8080/unfollowuser', { userEmail: loginEmail, followingEmail: followEmail });
+        commit('setUnfollow', followEmail);
+        await dispatch('fetchFollowing');
+      } catch (error) {
+        console.error("Error remove follow", error);
+      }
+    }
+  }
 });

@@ -5,6 +5,8 @@ import LoginView from '@/views/LoginView.vue';
 import MainPage from '@/views/MainPage.vue';
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import FollowPage from "@/views/FollowPage.vue";
+
 
 Vue.use(VueRouter);
 
@@ -21,6 +23,11 @@ export const router = new VueRouter({
       component: LoginView,
     },
     {
+      path: '/follow',
+      name: 'FollowPage',
+      component: FollowPage,
+	},
+	{
       path: '/main',
       name: 'MainPage',
       component: MainPage,

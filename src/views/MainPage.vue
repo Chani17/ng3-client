@@ -1,6 +1,5 @@
 <template>
   <div class="base_container">
-    {{ loginUserId }}
     <HeaderComponent></HeaderComponent>
     <MiddleComponent></MiddleComponent>
     <RoomList></RoomList>
@@ -23,6 +22,10 @@ export default {
   },
   mounted() {
     this.checkToken();
+  },
+  beforeDestroy() {
+    // 컴포넌트가 언마운트될 때 polling을 중지
+    this.$store.dispatch('stopPolling');
   },
   computed: {
     ...mapGetters({
