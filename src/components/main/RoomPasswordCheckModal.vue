@@ -36,7 +36,7 @@ export default {
     },
     async checkPassword() {
       try {
-        const roomId = parseInt(this.getNowRoom);
+        const roomId = this.getNowRoom.toString();
         const inputPassword = this.inputPassword;
 
         this.$router.push({

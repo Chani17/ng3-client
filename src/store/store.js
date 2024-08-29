@@ -149,7 +149,7 @@ export const store = new Vuex.Store({
       if (!state.pollingIntervalId) {
         const intervalId = setInterval(() => {
           dispatch("fetchRoom");
-        }, 1000);
+        }, 5000);
         commit("setPollingInterval", intervalId); // Interval ID를 저장
       }
     },
