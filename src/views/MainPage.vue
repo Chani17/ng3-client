@@ -1,6 +1,5 @@
 <template>
   <div class="base_container">
-    {{ loginUserId }}
     <HeaderComponent></HeaderComponent>
     <MiddleComponent></MiddleComponent>
     <RoomList></RoomList>
