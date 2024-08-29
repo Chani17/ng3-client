@@ -42,8 +42,12 @@ export default {
         const passwordInput = this.$refs.passwordInput;
         const title = titleInput ? titleInput.value : "";
         const password = passwordInput ? passwordInput.value : "";
+        const userId = this.$store.getters.getLoginUserId;
+        
+        console.log(userId);
+        
         // 요청 데이터 준비
-        const requestData = { title, password };
+        const requestData = { title, password, userId };
 
         // 서버에 POST 요청
         const response = await axios.post("http://localhost:8080/room", requestData);

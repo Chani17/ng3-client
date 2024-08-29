@@ -18,9 +18,10 @@ import Swal from "sweetalert2";
 export default {
   created() {
     const roomId = this.roomId;
+    const userId = this.$store.loginUserId;
     const password = this.password;
     // axios post 요청
-    this.requestJoinGamePage(roomId, password);
+    this.requestEnterGamePage(roomId, userId, password);
   },
   props: {
     roomId: {
@@ -33,12 +34,14 @@ export default {
     },
   },
   methods: {
-    async requestJoinGamePage(roomId, password) {
+    async requestEnterGamePage(roomId, password) {
       try {
         // 서버에 방 입장 요청을 보냄
+        const userId = this.$store.getters.getLoginUserId;
         const response = await axios.post("http://localhost:8080/room/enter", {
           roomId,
           password,
+          userId
         });
         // 상태 코드가 200이 아닌 경우, 에러로 처리
         if (response.status !== 200) {
