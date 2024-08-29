@@ -1,5 +1,6 @@
 <template>
   <div class="base_container">
+    {{ loginUserId }}
     <HeaderComponent></HeaderComponent>
     <MiddleComponent></MiddleComponent>
     <RoomList></RoomList>
@@ -8,28 +9,26 @@
 </template>
 
 <script>
-import "@/assets/css/base_container.css"; //스케치북 모양 레이아웃 적용 위한 css
+import '@/assets/css/base_container.css'; //스케치북 모양 레이아웃 적용 위한 css
 import { mapActions, mapGetters, mapMutations } from 'vuex';
 
-import CreateRoomModal from "@/components/main/CreateRoomModal.vue";
-import HeaderComponent from "@/components/main/HeaderComponent.vue";
-import MiddleComponent from "@/components/main/MiddleComponent.vue";
-import RoomList from "@/components/main/RoomList.vue";
-
+import CreateRoomModal from '@/components/main/CreateRoomModal.vue';
+import HeaderComponent from '@/components/main/HeaderComponent.vue';
+import MiddleComponent from '@/components/main/MiddleComponent.vue';
+import RoomList from '@/components/main/RoomList.vue';
 
 export default {
   created() {
-    this.$store.dispatch("startPolling");
+    this.$store.dispatch('startPolling');
   },
   mounted() {
     this.checkToken();
-    //this.loginUserId
   },
   computed: {
     ...mapGetters({
       loginUserId: 'getLoginUserId',
-      getRooms: "getRooms",
-      getShowCreateRoomModal: "getShowCreateRoomModal",
+      getRooms: 'getRooms',
+      getShowCreateRoomModal: 'getShowCreateRoomModal',
     }),
   },
   methods: {
@@ -37,9 +36,9 @@ export default {
       setLoginUserId: 'setLoginUserId',
     }),
     ...mapActions({
-      createRoom: "createRoom",
-      showCreateRoomModal: "showCreateRoomModal",
-      hideCreateRoomModal: "hideCreateRoomModal",
+      createRoom: 'createRoom',
+      showCreateRoomModal: 'showCreateRoomModal',
+      hideCreateRoomModal: 'hideCreateRoomModal',
     }),
 
     async checkToken() {
@@ -104,7 +103,7 @@ export default {
     loadLoginUserId(token) {
       //[박혁진]localStorage에 저장된 토큰을 이용해 로그인 유저정보 store.js에 세팅
       const decodedPayload = this.parseJwt(token);
-      const email = decodedPayload ? decodedPayload.sub : null;
+      const email = decodedPayload ? decodedPayload.email : null;
 
       if (email) {
         console.log('Extracted Email:', email);
