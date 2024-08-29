@@ -12,6 +12,7 @@
             <!-- 프로필 아바타 위치 -->
             <img :src="user.profile_image" class="profile-picture" />
             <h3>{{ user.nickname }}</h3>
+            <router-link :to="`/gallery/${user.email}`">갤러리</router-link>
             <p>❤️ {{ user.totalLikes }}</p>
           </div>
           <button v-if="!getFollowing(user.email)" @click.stop="followUser(user.email)" class="add-button">+</button>

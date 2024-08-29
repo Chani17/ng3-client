@@ -53,7 +53,7 @@ export const store = new Vuex.Store({
       return state.filteredRoomList.slice(offset, offset + 6);
     },
     getRoomId(state) {
-        return state.roomId;
+      return state.roomId;
     },
     getPage(state) {
       return state.page;
@@ -116,7 +116,7 @@ export const store = new Vuex.Store({
       state.roomList = roomList;
     },
     setRoomId(state, roomId) {
-        state.roomId = roomId;
+      state.roomId = roomId;
     },
     setFilteredRoomList(state, filteredRoomList) {
       state.filteredRoomList = filteredRoomList;
@@ -152,19 +152,8 @@ export const store = new Vuex.Store({
     setImages(state, images) {
       state.images = images;
     },
-  },
-  actions: {
-    scrollLeft({ commit, state }) {
-      if (state.currentIndex > 0) {
-        commit("SET_INDEX", state.currentIndex - state.itemsPerPage);
-      }
-    },
-    // 팔로우
-    setUserSearch(state, search) {
-      state.userSearch = search;
-    },
-    setUsers(state, users) {
-      state.users = users;
+    setPollingInterval(state, intervalId) {
+      state.pollingIntervalId = intervalId; // pollingIntervalId를 저장
     },
     setFollowUsers(state, users) {
       if (Array.isArray(users)) {
@@ -175,6 +164,13 @@ export const store = new Vuex.Store({
         state.followIds = [];
       }
     },
+    // 팔로우
+    setUserSearch(state, search) {
+      state.userSearch = search;
+    },
+    setUsers(state, users) {
+      state.users = users;
+    },
     setFollow(state, userId) {
       if (!state.followIds.includes(userId)) {
         state.followIds.push(userId);
@@ -183,11 +179,13 @@ export const store = new Vuex.Store({
     setUnfollow(state, userId) {
       state.followIds = state.followIds.filter(id => id !== userId);
     },
-    setPollingInterval(state, intervalId) {
-      state.pollingIntervalId = intervalId; // pollingIntervalId를 저장
-    },
   },
   actions: {
+    scrollLeft({ commit, state }) {
+      if (state.currentIndex > 0) {
+        commit("SET_INDEX", state.currentIndex - state.itemsPerPage);
+      }
+    },
     async fetchRoom({ commit, dispatch }) {
       try {
         const response = await axios.get("http://nggg.com:8080/room");
@@ -203,80 +201,73 @@ export const store = new Vuex.Store({
         commit("SET_INDEX", state.currentIndex + state.itemsPerPage);
       }
     },
-  filterRooms({ commit, state }) {
-    let filteredRoomList = state.roomList;
-    if (state.searchKeyword !== "") {
-      if (state.searchType === "title") {
-        filteredRoomList = filteredRoomList.filter((room) =>
-          room.title.includes(state.searchKeyword)
-        );
-      } else if (state.searchType === "nickname") {
-        filteredRoomList = filteredRoomList.filter((room) =>
-          room.users.some((user) => user.nickname.includes(state.searchKeyword))
-        );
+    filterRooms({ commit, state }) {
+      let filteredRoomList = state.roomList;
+      if (state.searchKeyword !== "") {
+        if (state.searchType === "title") {
+          filteredRoomList = filteredRoomList.filter((room) =>
+            room.title.includes(state.searchKeyword)
+          );
+        } else if (state.searchType === "nickname") {
+          filteredRoomList = filteredRoomList.filter((room) =>
+            room.users.some((user) => user.nickname.includes(state.searchKeyword))
+          );
+        }
       }
-    }
-    commit("setFilteredRoomList", filteredRoomList);
+      commit("setFilteredRoomList", filteredRoomList);
 
-    // 총 페이지 수 계산 (최소 1페이지는 있어야 함)
-    const totalPageCount = Math.ceil(filteredRoomList.length / 6);
-    commit("setTotalPageCount", totalPageCount);
+      // 총 페이지 수 계산 (최소 1페이지는 있어야 함)
+      const totalPageCount = Math.ceil(filteredRoomList.length / 6);
+      commit("setTotalPageCount", totalPageCount);
 
-    // 현재 페이지 보정 (총 페이지 수를 넘지 않도록)
-    if (state.page >= totalPageCount && totalPageCount > 0) {
-      commit("setPage", totalPageCount - 1);
-    } else if (totalPageCount === 0) {
-      // 검색 결과가 없는 경우 페이지를 0으로 설정
-      commit("setPage", 0);
-    }
-  },
-  setSearchKeyword({ commit, dispatch }, searchKeyword) {
-    commit("setSearchKeyword", searchKeyword);
-    dispatch("filterRooms"); // 검색어 변경 시 필터링 로직 실행
-  },
-  setSearchType({ commit, dispatch }, searchType) {
-    commit("setSearchType", searchType);
-    dispatch("filterRooms"); // 검색 타입 변경 시 필터링 로직 실행
-  },
-  // 2. fetchroom을 주기적으로 날리는 함수
-  // 메인페이지 접속했을 때 실행
-  startPolling({ dispatch }) {
-    setInterval(() => {
-      dispatch("fetchRoom");
-    }, 10000);
-  },
-  increasePage({ commit }) {
-    const totalPageCount = this.state.totalPageCount;
-    let page = this.state.page;
-    page++;
-    if (page > totalPageCount) {
-      page = totalPageCount;
-    }
-    commit("setPage", page);
-  },
-  decreasePage({ commit }) {
-    let page = this.state.page;
-    page--;
-    if (page < 0) {
-      page = 0;
-    }
-    commit("setPage", page);
-  },
-  showCreateRoomModal({ commit }) {
-    commit("setShowCreateRoomModal", true);
-  },
-  hideCreateRoomModal({ commit }) {
-    commit("setShowCreateRoomModal", false);
-  },
-  showPasswordCheckModal({ commit }) {
-    commit("setShowPasswordCheckModal", true);
-  },
-  hidePasswordCheckModal({ commit }) {
-    commit("setShowPasswordCheckModal", false);
-  },
-  setNowRoom({ commit }, roomId) {
-    commit("setNowRoom", roomId);
-  },
+      // 현재 페이지 보정 (총 페이지 수를 넘지 않도록)
+      if (state.page >= totalPageCount && totalPageCount > 0) {
+        commit("setPage", totalPageCount - 1);
+      } else if (totalPageCount === 0) {
+        // 검색 결과가 없는 경우 페이지를 0으로 설정
+        commit("setPage", 0);
+      }
+    },
+    setSearchKeyword({ commit, dispatch }, searchKeyword) {
+      commit("setSearchKeyword", searchKeyword);
+      dispatch("filterRooms"); // 검색어 변경 시 필터링 로직 실행
+    },
+    setSearchType({ commit, dispatch }, searchType) {
+      commit("setSearchType", searchType);
+      dispatch("filterRooms"); // 검색 타입 변경 시 필터링 로직 실행
+    },
+    increasePage({ commit }) {
+      const totalPageCount = this.state.totalPageCount;
+      let page = this.state.page;
+      page++;
+      if (page > totalPageCount) {
+        page = totalPageCount;
+      }
+      commit("setPage", page);
+    },
+    decreasePage({ commit }) {
+      let page = this.state.page;
+      page--;
+      if (page < 0) {
+        page = 0;
+      }
+      commit("setPage", page);
+    },
+    showCreateRoomModal({ commit }) {
+      commit("setShowCreateRoomModal", true);
+    },
+    hideCreateRoomModal({ commit }) {
+      commit("setShowCreateRoomModal", false);
+    },
+    showPasswordCheckModal({ commit }) {
+      commit("setShowPasswordCheckModal", true);
+    },
+    hidePasswordCheckModal({ commit }) {
+      commit("setShowPasswordCheckModal", false);
+    },
+    setNowRoom({ commit }, roomId) {
+      commit("setNowRoom", roomId);
+    },
     startPolling({ dispatch, commit, state }) {
       if (!state.pollingIntervalId) {
         const intervalId = setInterval(() => {
@@ -291,24 +282,10 @@ export const store = new Vuex.Store({
         commit("setPollingInterval", null); // Interval ID 초기화
       }
     },
-    // 팔로우
-    async searchUsers({ commit, dispatch }, search) {
-      commit('setUserSearch', search);
-      try {
-        if (search.trim === '') {
-          await dispatch('fetchFollowing');
-        } else {
-          const response = await axios.get('http://localhost:8080/usersearch', { params: { nickname: search } });
-          commit('setUsers', response.data);
-        }
-      } catch (error) {
-        console.error("Error searching users", error);
-      }
-    },
     async fetchFollowing({ commit, getters }) {
       try {
         const loginEmail = getters.getLoginUserId;
-        const response = await axios.get('http://localhost:8080/following', { params: { userEmail: loginEmail } });
+        const response = await axios.get('http://nggg.com:8080/following', { params: { userEmail: loginEmail } });
         if (Array.isArray(response.data)) {
           commit('setFollowUsers', response.data);
         } else {
@@ -322,7 +299,7 @@ export const store = new Vuex.Store({
     async followUser({ commit, getters, dispatch }, followEmail) {
       try {
         const loginEmail = getters.getLoginUserId;
-        await axios.post('http://localhost:8080/followuser', { userEmail: loginEmail, followingEmail: followEmail });
+        await axios.post('http://nggg.com:8080/followuser', { userEmail: loginEmail, followingEmail: followEmail });
         commit('setFollow', followEmail);
         await dispatch('fetchFollowing');
       } catch (error) {
@@ -332,12 +309,26 @@ export const store = new Vuex.Store({
     async unfollowUser({ commit, getters, dispatch }, followEmail) {
       try {
         const loginEmail = getters.getLoginUserId;
-        await axios.post('http://localhost:8080/unfollowuser', { userEmail: loginEmail, followingEmail: followEmail });
+        await axios.post('http://nggg.com:8080/unfollowuser', { userEmail: loginEmail, followingEmail: followEmail });
         commit('setUnfollow', followEmail);
         await dispatch('fetchFollowing');
       } catch (error) {
         console.error("Error remove follow", error);
       }
-    }
+    },
+    // 팔로우
+    async searchUsers({ commit, dispatch }, search) {
+      commit('setUserSearch', search);
+      try {
+        if (search.trim === '') {
+          await dispatch('fetchFollowing');
+        } else {
+          const response = await axios.get('http://nggg.com:8080/usersearch', { params: { nickname: search } });
+          commit('setUsers', response.data);
+        }
+      } catch (error) {
+        console.error("Error searching users", error);
+      }
+    },
   }
 });
