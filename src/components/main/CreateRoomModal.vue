@@ -19,8 +19,8 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from "vuex";
 import axios from "axios";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
   created() {},
@@ -50,7 +50,7 @@ export default {
         const requestData = { title, password, userId };
 
         // 서버에 POST 요청
-        const response = await axios.post("http://localhost:8080/room", requestData);
+        const response = await axios.post("http://nggg.com:8080/room", requestData);
 
         // 서버에서 반환된 방 ID
         const roomId = parseInt(response.data.roomId);

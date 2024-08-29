@@ -6,7 +6,7 @@
       <div class="userReadyChatContainer">
         <InRoomUsersComponent :users="users"></InRoomUsersComponent>
         <ReadyGameComponent></ReadyGameComponent>
-        <ChatRoomComponent></ChatRoomComponent>
+        <ChatRoomComponent :roomId="roomId"></ChatRoomComponent>
       </div>
     </div>
   </div>
@@ -17,14 +17,15 @@
 import "@/assets/css/base_container.css"; //스케치북 모양 레이아웃 적용 위한 css
 
 /*vue import*/
+import ChatRoomComponent from "@/components/game/ChatRoomComponent.vue";
 import ExitGameComponent from "@/components/game/ExitGameComponent.vue";
 import GameHeaderComponent from "@/components/game/GameHeaderComponent.vue";
 import InRoomUsersComponent from "@/components/game/InRoomUsersComponent.vue";
 import ReadyGameComponent from "@/components/game/ReadyGameComponent.vue";
-import ChatRoomComponent from "@/components/game/ChatRoomComponent.vue";
 
 import axios from "axios";
 import Swal from "sweetalert2";
+import { mapMutations } from 'vuex';
 
 export default {
   data() {
@@ -36,7 +37,7 @@ export default {
     const roomId = this.roomId;
     // const userId = this.$store.getters.getLoginUserId;
     const password = this.password;
-
+    this.setRoomId(this.roomId);
     this.requestEnterGamePage(roomId, password);
   },
   props: {
@@ -50,10 +51,13 @@ export default {
     },
   },
   methods: {
+    ...mapMutations(['setRoomId']),
+
+
     async requestEnterGamePage(roomId, password) {
       try {
         const userId = this.$store.getters.getLoginUserId;
-        const response = await axios.post("http://localhost:8080/room/enter", {
+        const response = await axios.post("http://nggg.com:8080/room/enter", {
           roomId,
           userId,
           password,

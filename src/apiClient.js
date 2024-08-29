@@ -2,7 +2,7 @@ import axios from 'axios';
 import { router } from './router';
 
 const apiClient = axios.create({
-  baseURL: 'http://localhost:8080/api', // API 기본 URL
+  baseURL: 'http://nggg.com:8080/api', // API 기본 URL
   headers: {
     'Content-Type': 'application/json',
   },
