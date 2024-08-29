@@ -1,11 +1,14 @@
 import axios from "axios";
 import Vue from "vue";
 import Vuex from "vuex";
-
 Vue.use(Vuex);
 
 export const store = new Vuex.Store({
   state: {
+    currentIndex: 0,
+    itemsPerPage: 3,
+    isUserGallery: false,
+    images: [],
     roomList: [],
     filteredRoomList: [], // 필터링된 방 목록
     totalItemCount: 0,
@@ -20,6 +23,17 @@ export const store = new Vuex.Store({
     loginUserId: "", //현재 로그인된 유저 ID
   },
   getters: {
+    sortedItems(state) {
+      return state.images.slice().sort((a, b) => b.likes - a.likes);
+    },
+    currentItems(state, getters) {
+      if (!Array.isArray(state.images)) {
+        return [];
+      }
+      const start = state.currentIndex;
+      const end = start + state.itemsPerPage;
+      return getters.sortedItems.slice(start, end);
+    },
     getRooms(state) {
       let page = state.page;
       if (page >= state.totalPageCount) {
@@ -56,6 +70,23 @@ export const store = new Vuex.Store({
     },
   },
   mutations: {
+    SET_INDEX(state, index) {
+      state.currentIndex = index;
+    },
+    TOGGLE_LIKE(state, image) {
+      image.liked = !image.liked;
+      if (image.liked) {
+        image.likes++;
+      } else {
+        image.likes--;
+      }
+    },
+    UPDATE_IMAGE_LIKES(state, { imageId, likeCount }) {
+      const image = state.images.find((img) => img.id === imageId);
+      if (image) {
+        image.likes = likeCount;
+      }
+    },
     setRoom(state, roomList) {
       state.roomList = roomList;
     },
@@ -90,95 +121,132 @@ export const store = new Vuex.Store({
     setLoginUserId(state, loginUserId) {
       state.loginUserId = loginUserId;
     },
+    setImages(state, images) {
+      state.images = images;
+    },
   },
   actions: {
-    async fetchRoom({ commit, dispatch }) {
-      // dispatch 추가
+    scrollLeft({ commit, state }) {
+      if (state.currentIndex > 0) {
+        commit("SET_INDEX", state.currentIndex - state.itemsPerPage);
+      }
+    },
+    scrollRight({ commit, state }) {
+      if (state.currentIndex + state.itemsPerPage < state.images.length) {
+        commit("SET_INDEX", state.currentIndex + state.itemsPerPage);
+      }
+    },
+    async imageLike({ commit }, { userId, image }) {
       try {
-        const response = await axios.get("http://localhost:8080/room");
-        commit("setRoom", response.data);
-        dispatch("filterRooms"); // 데이터를 가져온 후 필터링을 초기화
+        const imageId = parseInt(image.id);
+
+        console.log("userID = ", userId);
+        console.log("imageID = ", imageId);
+
+        // 서버에 좋아요 요청 보내기
+        const response = await axios.post(
+          `http://localhost:8080/${imageId}/likes`,
+          null,
+          {
+            params: {
+              userId: userId,
+            },
+          }
+        );
+
+        // 서버에서 받은 새로운 좋아요 수
+        const likeCount = response.data;
+
+        // 로컬 상태 업데이트
+        commit("TOGGLE_LIKE", image);
+        commit("UPDATE_IMAGE_LIKES", { imageId, likeCount });
       } catch (error) {
-        console.error("에러 발생", error);
+        console.error("좋아요 요청 오류:", error);
       }
     },
-    filterRooms({ commit, state }) {
-      let filteredRoomList = state.roomList;
-      if (state.searchKeyword !== "") {
-        if (state.searchType === "title") {
-          filteredRoomList = filteredRoomList.filter((room) =>
-            room.title.includes(state.searchKeyword)
-          );
-        } else if (state.searchType === "nickname") {
-          filteredRoomList = filteredRoomList.filter((room) =>
-            room.users.some((user) =>
-              user.nickname.includes(state.searchKeyword)
-            )
-          );
-        }
+  },
+  async fetchRoom({ commit, dispatch }) {
+    // dispatch 추가
+    try {
+      const response = await axios.get("http://localhost:8080/room");
+      commit("setRoom", response.data);
+      dispatch("filterRooms"); // 데이터를 가져온 후 필터링을 초기화
+    } catch (error) {
+      console.error("에러 발생", error);
+    }
+  },
+  filterRooms({ commit, state }) {
+    let filteredRoomList = state.roomList;
+    if (state.searchKeyword !== "") {
+      if (state.searchType === "title") {
+        filteredRoomList = filteredRoomList.filter((room) =>
+          room.title.includes(state.searchKeyword)
+        );
+      } else if (state.searchType === "nickname") {
+        filteredRoomList = filteredRoomList.filter((room) =>
+          room.users.some((user) => user.nickname.includes(state.searchKeyword))
+        );
       }
-      commit("setFilteredRoomList", filteredRoomList);
-      commit("setTotalItemCount", filteredRoomList.length);
+    }
+    commit("setFilteredRoomList", filteredRoomList);
 
-      // 총 페이지 수 계산 (최소 1페이지는 있어야 함)
-      const totalPageCount = Math.ceil(filteredRoomList.length / 6);
-      commit("setTotalPageCount", totalPageCount);
+    // 총 페이지 수 계산 (최소 1페이지는 있어야 함)
+    const totalPageCount = Math.ceil(filteredRoomList.length / 6);
+    commit("setTotalPageCount", totalPageCount);
 
-      // 현재 페이지 보정 (총 페이지 수를 넘지 않도록)
-      if (state.page >= totalPageCount && totalPageCount > 0) {
-        commit("setPage", totalPageCount - 1);
-      } else if (totalPageCount === 0) {
-        // 검색 결과가 없는 경우 페이지를 0으로 설정
-
-        commit("setPage", 0);
-      }
-    },
-    setSearchKeyword({ commit, dispatch }, searchKeyword) {
-      commit("setSearchKeyword", searchKeyword);
-      dispatch("filterRooms"); // 검색어 변경 시 필터링 로직 실행
-    },
-    setSearchType({ commit, dispatch }, searchType) {
-      commit("setSearchType", searchType);
-      dispatch("filterRooms"); // 검색 타입 변경 시 필터링 로직 실행
-    },
-    // 2. fetchroom을 주기적으로 날리는 함수
-    // 메인페이지 접속했을 때 실행
-    startPolling({ dispatch }) {
-      setInterval(() => {
-        dispatch("fetchRoom");
-      }, 10000);
-    },
-    increasePage({ commit }) {
-      const totalPageCount = this.state.totalPageCount;
-      let page = this.state.page;
-      page++;
-      if (page > totalPageCount) {
-        page = totalPageCount;
-      }
-      commit("setPage", page);
-    },
-    decreasePage({ commit }) {
-      let page = this.state.page;
-      page--;
-      if (page < 0) {
-        page = 0;
-      }
-      commit("setPage", page);
-    },
-    showCreateRoomModal({ commit }) {
-      commit("setShowCreateRoomModal", true);
-    },
-    hideCreateRoomModal({ commit }) {
-      commit("setShowCreateRoomModal", false);
-    },
-    showPasswordCheckModal({ commit }) {
-      commit("setShowPasswordCheckModal", true);
-    },
-    hidePasswordCheckModal({ commit }) {
-      commit("setShowPasswordCheckModal", false);
-    },
-    setNowRoom({ commit }, roomId) {
-      commit("setNowRoom", roomId);
-    },
+    // 현재 페이지 보정 (총 페이지 수를 넘지 않도록)
+    if (state.page >= totalPageCount && totalPageCount > 0) {
+      commit("setPage", totalPageCount - 1);
+    } else if (totalPageCount === 0) {
+      // 검색 결과가 없는 경우 페이지를 0으로 설정
+      commit("setPage", 0);
+    }
+  },
+  setSearchKeyword({ commit, dispatch }, searchKeyword) {
+    commit("setSearchKeyword", searchKeyword);
+    dispatch("filterRooms"); // 검색어 변경 시 필터링 로직 실행
+  },
+  setSearchType({ commit, dispatch }, searchType) {
+    commit("setSearchType", searchType);
+    dispatch("filterRooms"); // 검색 타입 변경 시 필터링 로직 실행
+  },
+  // 2. fetchroom을 주기적으로 날리는 함수
+  // 메인페이지 접속했을 때 실행
+  startPolling({ dispatch }) {
+    setInterval(() => {
+      dispatch("fetchRoom");
+    }, 10000);
+  },
+  increasePage({ commit }) {
+    const totalPageCount = this.state.totalPageCount;
+    let page = this.state.page;
+    page++;
+    if (page > totalPageCount) {
+      page = totalPageCount;
+    }
+    commit("setPage", page);
+  },
+  decreasePage({ commit }) {
+    let page = this.state.page;
+    page--;
+    if (page < 0) {
+      page = 0;
+    }
+    commit("setPage", page);
+  },
+  showCreateRoomModal({ commit }) {
+    commit("setShowCreateRoomModal", true);
+  },
+  hideCreateRoomModal({ commit }) {
+    commit("setShowCreateRoomModal", false);
+  },
+  showPasswordCheckModal({ commit }) {
+    commit("setShowPasswordCheckModal", true);
+  },
+  hidePasswordCheckModal({ commit }) {
+    commit("setShowPasswordCheckModal", false);
+  },
+  setNowRoom({ commit }, roomId) {
+    commit("setNowRoom", roomId);
   },
 });

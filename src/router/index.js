@@ -1,4 +1,5 @@
 import NotFoundView from '@/components/common/NotFoundView.vue';
+import GalleryView from '@/views/GalleryView.vue';
 import GamePage from '@/views/GamePage.vue';
 import LoginView from '@/views/LoginView.vue';
 import MainPage from '@/views/MainPage.vue';
@@ -29,6 +30,11 @@ export const router = new VueRouter({
       name: 'gamePage',
       component: GamePage,
       props: true,
+    },
+    {
+      path: '/gallery',
+      name: 'GalleryView',
+      component: GalleryView,
     },
     {
       path: '*',

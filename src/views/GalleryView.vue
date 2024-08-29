@@ -12,12 +12,12 @@
           <div class="gallery-item" v-for="(image, index) in safeCurrentItems" :key="index" :class="getMedal(currentIndex + index)">
             <div class="medal" v-if="currentIndex + index < 3"></div>
             <div class="image-frame">
-              <!-- 그림 위치 --><img :src="image.src" alt="Image"/>
+              <!-- 그림 위치 --><img :src="image.url" alt="Image"/>
             </div>
             <div class="image-info">
-              <!-- 제시어 위치 --><p class="image-caption">{{image.caption}}</p>
+              <!-- 제시어 위치 --><p class="image-caption">{{image.title}}</p>
               <!-- 좋아요 위치 --><button class="image-likes" @click="imageLike(image)" v-if="!isUserGallery">
-              <span class="heart" :class="{'liked': image.liked}"></span>{{image.likes}}</button>
+              <span class="heart" :class="{'liked': image.liked}"></span>{{image.likeCount}}</button>
             </div>
           </div>
         </div>
@@ -42,13 +42,14 @@
 </template>
 
 <script>
-import { mapState, mapGetters, mapActions } from 'vuex';
+import axios from 'axios';
+import { mapActions, mapGetters, mapState } from 'vuex';
 
 export default {
   name: "GalleryView.vue",
   computed: {
     ...mapState(['currentIndex', 'isUserGallery', 'itemsPerPage']),
-    ...mapGetters(['currentItems']),
+    ...mapGetters(['currentItems', 'getLoginUserId']),
     safeCurrentItems() {
       return this.currentItems || [];
     },
@@ -63,7 +64,27 @@ export default {
       if(index === 1) return 'silver-medal';
       if(index === 2) return 'bronze-medal';
       return '';
+    },
+    async imageLike(image) {
+      const userId = this.getLoginUserId;
+      console.log("userId = ", userId);
+      await this.$store.dispatch('imageLike', { userId, image });
+      this.$store.commit('TOGGLE_LIKE', image);
+    },
+    async fetchImages(userId) {
+      try {
+        const response = await axios.get(`http://localhost:8080/${userId}/images`);
+        this.$store.commit('setImages', response.data);
+        console.log(response.data);
+      } catch (error) {
+        console.error('이미지 로드 실패', error);
+      }
     }
+  },
+  created() {
+    const userId = this.getLoginUserId;
+    console.log("userID = ", userId);
+    this.fetchImages(userId);
   }
 }
 </script>
