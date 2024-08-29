@@ -18,6 +18,7 @@ export const store = new Vuex.Store({
     nowRoom: "",
     // phj
     loginUserId: "", //현재 로그인된 유저 ID
+    pollingIntervalId: null, // 타이머 ID를 저장할 상태 추가
   },
   getters: {
     getRooms(state) {
@@ -90,14 +91,17 @@ export const store = new Vuex.Store({
     setLoginUserId(state, loginUserId) {
       state.loginUserId = loginUserId;
     },
+    setPollingInterval(state, intervalId) {
+      state.pollingIntervalId = intervalId; // pollingIntervalId를 저장
+    },
   },
   actions: {
     async fetchRoom({ commit, dispatch }) {
-      // dispatch 추가
       try {
         const response = await axios.get("http://localhost:8080/room");
         commit("setRoom", response.data);
         dispatch("filterRooms"); // 데이터를 가져온 후 필터링을 초기화
+        console.log("fetchRoom 실행")
       } catch (error) {
         console.error("에러 발생", error);
       }
@@ -138,15 +142,22 @@ export const store = new Vuex.Store({
       dispatch("filterRooms"); // 검색어 변경 시 필터링 로직 실행
     },
     setSearchType({ commit, dispatch }, searchType) {
-      commit("setSearchType", searchType);
-      dispatch("filterRooms"); // 검색 타입 변경 시 필터링 로직 실행
+      commit("setSearchType", searchType); // 검색 타입 변경 시 필터링 로직 실행
+      dispatch("filterRooms");
     },
-    // 2. fetchroom을 주기적으로 날리는 함수
-    // 메인페이지 접속했을 때 실행
-    startPolling({ dispatch }) {
-      setInterval(() => {
-        dispatch("fetchRoom");
-      }, 10000);
+    startPolling({ dispatch, commit, state }) {
+      if (!state.pollingIntervalId) {
+        const intervalId = setInterval(() => {
+          dispatch("fetchRoom");
+        }, 1000);
+        commit("setPollingInterval", intervalId); // Interval ID를 저장
+      }
+    },
+    stopPolling({ commit, state }) {
+      if (state.pollingIntervalId) {
+        clearInterval(state.pollingIntervalId); // Interval 중지
+        commit("setPollingInterval", null); // Interval ID 초기화
+      }
     },
     increasePage({ commit }) {
       const totalPageCount = this.state.totalPageCount;
