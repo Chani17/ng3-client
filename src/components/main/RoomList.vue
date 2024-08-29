@@ -12,6 +12,7 @@
           <div>진행 상태 : {{ room.state }}</div>
           <div class="roomBoxFooter">
             <div>{{ room.users.length }} / 6</div>
+            <!-- <div>{{ room.users.email }}</div> -->
             <div v-if="room.password">🔒</div>
           </div>
         </div>

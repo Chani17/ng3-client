@@ -2,6 +2,13 @@
   <div class="base_container">
     <ExitGameComponent></ExitGameComponent>
     <GameHeaderComponent></GameHeaderComponent>
+    <div class="gameComponentContainer">
+      <div class="userReadyChatContainer">
+        <InRoomUsersComponent :users="users"></InRoomUsersComponent>
+        <ReadyGameComponent></ReadyGameComponent>
+        <ChatRoomComponent></ChatRoomComponent>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -12,17 +19,23 @@ import "@/assets/css/base_container.css"; //스케치북 모양 레이아웃 적
 /*vue import*/
 import ExitGameComponent from "@/components/game/ExitGameComponent.vue";
 import GameHeaderComponent from "@/components/game/GameHeaderComponent.vue";
+import InRoomUsersComponent from "@/components/game/InRoomUsersComponent.vue";
+import ReadyGameComponent from "@/components/game/ReadyGameComponent.vue";
+import ChatRoomComponent from "@/components/game/ChatRoomComponent.vue";
+
 import axios from "axios";
 import Swal from "sweetalert2";
 
 export default {
+  data() {
+    return {
+      users: [], // 유저 데이터 저장용 배열
+    };
+  },
   created() {
     const roomId = this.roomId;
-    const userId = this.$store.getters.getLoginUserId;
+    // const userId = this.$store.getters.getLoginUserId;
     const password = this.password;
-    // axios post 요청
-
-    console.log(roomId, password, userId);
 
     this.requestEnterGamePage(roomId, password);
   },
@@ -39,74 +52,40 @@ export default {
   methods: {
     async requestEnterGamePage(roomId, password) {
       try {
-        // 서버에 방 입장 요청을 보냄
         const userId = this.$store.getters.getLoginUserId;
         const response = await axios.post("http://localhost:8080/room/enter", {
           roomId,
           userId,
-          password
+          password,
         });
 
-        console.log(roomId, password, userId);
-        
-        // 상태 코드가 200이 아닌 경우, 에러로 처리
-        if (response.status !== 200) {
-          Swal.fire({
-            icon: "error",
-            title: "입장 불가!",
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            text: response.data.message,
-          });
-          this.$router.push("/main");
-          return;
-        } else if (response.status === 200) {
-          // 중복된 탐색 방지
+        if (response.status === 200) {
+          // 서버로부터 받은 유저 정보를 저장
+          this.users = response.data.users;
+
+          console.log(this.users);
+
           const targetPath = `/room/${roomId}`;
           if (this.$route.path !== targetPath) {
             this.$router.push(targetPath);
           }
+        } else {
+          // 에러 처리
+          Swal.fire({
+            icon: "error",
+            title: "입장 불가!",
+            text: response.data.message,
+          });
+          this.$router.push("/main");
         }
-
-        // 추가 로직 필요하면 여기에
       } catch (error) {
         // 서버로부터 발생한 에러 처리
         if (error.response) {
-          const status = error.response.status;
-          const message = error.response.data.message;
-
-          if (status === 401) {
-            Swal.fire({
-              icon: "warning",
-              title: "입장 불가!",
-              text: message,
-            });
-          } else if (status === 402) {
-            Swal.fire({
-              icon: "warning",
-              title: "입장 불가!",
-              text: message,
-            });
-          } else if (status === 403) {
-            Swal.fire({
-              icon: "error",
-              title: "입장 불가!",
-              text: message,
-            });
-          } else if (status === 404) {
-            Swal.fire({
-              icon: "error",
-              title: "입장 불가!",
-              text: message,
-            });
-          } else {
-            Swal.fire({
-              icon: "error",
-              title: "입장 불가!",
-              text: "알 수 없는 오류가 발생했습니다.",
-            });
-          }
-
+          Swal.fire({
+            icon: "error",
+            title: "입장 불가!",
+            text: error.response.data.message || "알 수 없는 오류가 발생했습니다.",
+          });
           this.$router.push("/main");
         } else {
           Swal.fire({
@@ -122,8 +101,22 @@ export default {
   components: {
     ExitGameComponent,
     GameHeaderComponent,
+    InRoomUsersComponent,
+    ReadyGameComponent,
+    ChatRoomComponent,
   },
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.gameComponentContainer {
+  margin-top: 250px;
+  width: 100%;
+}
+.userReadyChatContainer {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  gap: 28px;
+}
+</style>
