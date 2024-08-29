@@ -23,6 +23,7 @@ export const router = new VueRouter({
     },
     {
       path: '/follow',
+      name: 'FollowPage',
       component: FollowPage,
 	},
 	{

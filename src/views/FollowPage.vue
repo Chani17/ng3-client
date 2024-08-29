@@ -6,16 +6,16 @@
         <input type="text" v-model="userSearch" class="search-input"/>
       </div>
       <div class="follow-list">
-        <div v-for="user in filteredUsers" :key="user.id" class="user-card">
+        <div v-for="user in getFilteredUsers" :key="user.id" class="user-card">
           <!-- 갤러리로 이동 -->
           <div class="user-info">
             <!-- 프로필 아바타 위치 -->
-            <img :src="user.profilePicture" class="profile-picture" />
-            <h3>{{user.nickname}}</h3>
-            <p>❤️ {{user.totalLikes}}</p>
+            <img :src="user.profile_image" class="profile-picture" />
+            <h3>{{ user.nickname }}</h3>
+            <p>❤️ {{ user.totalLikes }}</p>
           </div>
-          <button v-if="!isFollowed(user.id)" @click.stop="addFollow(user.id)" class="add-button">+</button>
-          <button v-else @click.stop="removeFollow(user.id)" class="remove-button">-</button>
+          <button v-if="!getFollowing(user.email)" @click.stop="followUser(user.email)" class="add-button">+</button>
+          <button v-else @click.stop="unfollowUser(user.email)" class="remove-button">-</button>
         </div>
       </div>
     </div>
@@ -27,20 +27,23 @@ import "@/assets/css/base_container.css";
 import { mapGetters, mapActions } from "vuex";
 
 export default {
-  name: "FollowPage.vue",
+  name: "FollowPage",
   computed: {
-    ...mapGetters(["filteredUsers", "isFollowed"]),
+    ...mapGetters(["getFilteredUsers", "getFollowing"]),
     userSearch: {
       get() {
         return this.$store.state.userSearch;
       },
       set(value) {
         this.$store.dispatch('searchUsers', value);
-      }
+      },
     }
   },
   methods: {
-    ...mapActions(["addFollow", "removeFollow", "searchUsers"]),
+    ...mapActions(["searchUsers", "followUser", "unfollowUser", "fetchFollowing"]),
+  },
+  created() {
+    this.fetchFollowing();
   }
 };
 </script>
