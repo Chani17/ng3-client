@@ -32,9 +32,10 @@ export const router = new VueRouter({
       props: true,
     },
     {
-      path: '/gallery',
+      path: '/gallery/:userId',
       name: 'GalleryView',
       component: GalleryView,
+      props: true
     },
     {
       path: '*',

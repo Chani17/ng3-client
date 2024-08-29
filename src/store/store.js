@@ -21,6 +21,7 @@ export const store = new Vuex.Store({
     nowRoom: "",
     // phj
     loginUserId: "", //현재 로그인된 유저 ID
+    likeStatuses: {},
   },
   getters: {
     sortedItems(state) {
@@ -33,6 +34,9 @@ export const store = new Vuex.Store({
       const start = state.currentIndex;
       const end = start + state.itemsPerPage;
       return getters.sortedItems.slice(start, end);
+    },
+    isLiked: (state) => (imageId) => {
+      return state.likeStatuses[imageId] || false;
     },
     getRooms(state) {
       let page = state.page;
@@ -73,18 +77,16 @@ export const store = new Vuex.Store({
     SET_INDEX(state, index) {
       state.currentIndex = index;
     },
-    TOGGLE_LIKE(state, image) {
-      image.liked = !image.liked;
-      if (image.liked) {
-        image.likes++;
-      } else {
-        image.likes--;
-      }
+    setLikeStatus(state, { imageId, liked }) {
+      state.likeStatuses = {
+        ...state.likeStatuses,
+        [imageId]: liked,
+      };
     },
-    UPDATE_IMAGE_LIKES(state, { imageId, likeCount }) {
-      const image = state.images.find((img) => img.id === imageId);
+    updateLikeCount(state, { imageId, likeCount }) {
+      const image = state.images.find(img => img.id === imageId);
       if (image) {
-        image.likes = likeCount;
+        image.likeCount = likeCount;
       }
     },
     setRoom(state, roomList) {
@@ -136,36 +138,7 @@ export const store = new Vuex.Store({
         commit("SET_INDEX", state.currentIndex + state.itemsPerPage);
       }
     },
-    async imageLike({ commit }, { userId, image }) {
-      try {
-        const imageId = parseInt(image.id);
-
-        console.log("userID = ", userId);
-        console.log("imageID = ", imageId);
-
-        // 서버에 좋아요 요청 보내기
-        const response = await axios.post(
-          `http://localhost:8080/${imageId}/likes`,
-          null,
-          {
-            params: {
-              userId: userId,
-            },
-          }
-        );
-
-        // 서버에서 받은 새로운 좋아요 수
-        const likeCount = response.data;
-
-        // 로컬 상태 업데이트
-        commit("TOGGLE_LIKE", image);
-        commit("UPDATE_IMAGE_LIKES", { imageId, likeCount });
-      } catch (error) {
-        console.error("좋아요 요청 오류:", error);
-      }
-    },
-  },
-  async fetchRoom({ commit, dispatch }) {
+    async fetchRoom({ commit, dispatch }) {
     // dispatch 추가
     try {
       const response = await axios.get("http://localhost:8080/room");
@@ -249,4 +222,5 @@ export const store = new Vuex.Store({
   setNowRoom({ commit }, roomId) {
     commit("setNowRoom", roomId);
   },
+}
 });

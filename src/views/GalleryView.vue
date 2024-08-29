@@ -17,7 +17,7 @@
             <div class="image-info">
               <!-- 제시어 위치 --><p class="image-caption">{{image.title}}</p>
               <!-- 좋아요 위치 --><button class="image-likes" @click="imageLike(image)" v-if="!isUserGallery">
-              <span class="heart" :class="{'liked': image.liked}"></span>{{image.likeCount}}</button>
+              <span class="heart" :class="{'liked': isLiked(image.id)}"></span>{{image.likeCount}}</button>
             </div>
           </div>
         </div>
@@ -46,16 +46,16 @@ import axios from 'axios';
 import { mapActions, mapGetters, mapState } from 'vuex';
 
 export default {
-  name: "GalleryView.vue",
+  name: "GalleryView",
   props: {
     userId: {
       type: String,
-      reqired: true
+      required: true
     }
   },
   computed: {
     ...mapState(['currentIndex', 'isUserGallery', 'itemsPerPage']),
-    ...mapGetters(['currentItems', 'getLoginUserId']),
+    ...mapGetters(['currentItems', 'getLoginUserId', 'isLiked']),
     safeCurrentItems() {
       return this.currentItems || [];
     },
@@ -64,33 +64,74 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['scrollLeft', 'scrollRight', 'imageLike']),
+    ...mapActions(['scrollLeft', 'scrollRight']),
     getMedal(index) {
-      if(index === 0) return 'gold-medal';
-      if(index === 1) return 'silver-medal';
-      if(index === 2) return 'bronze-medal';
+      if (index === 0) return 'gold-medal';
+      if (index === 1) return 'silver-medal';
+      if (index === 2) return 'bronze-medal';
       return '';
     },
     async imageLike(image) {
       const userId = this.getLoginUserId;
-      console.log("userId = ", userId);
-      await this.$store.dispatch('imageLike', { userId, image });
-      this.$store.commit('TOGGLE_LIKE', image);
+      const isLiked = this.isLiked(image.id);
+
+      try {
+        let likeCount;
+        if (isLiked) {
+          // 좋아요 취소
+          const response = await axios.delete(`http://localhost:8080/${image.id}/likes`, {
+            params: { userId },
+          });
+          likeCount = response.data;
+        } else {
+          // 좋아요
+          const response = await axios.post(`http://localhost:8080/${image.id}/likes`, null, {
+            params: { userId },
+          });
+          likeCount = response.data;
+        }
+
+        // 상태 업데이트
+        this.$store.commit('updateLikeCount', { imageId: image.id, likeCount });
+        this.$store.commit('setLikeStatus', { imageId: image.id, liked: !isLiked });
+      } catch (error) {
+        console.error("좋아요 요청 오류:", error);
+      }
     },
     async fetchImages(userId) {
       try {
+        // 이미지 데이터를 먼저 가져옴
         const response = await axios.get(`http://localhost:8080/${userId}/images`);
-        this.$store.commit('setImages', response.data);
-        console.log(response.data);
+
+        const images = response.data;
+
+        // Vuex에 이미지 데이터를 저장
+        this.$store.commit('setImages', images);
+
+        // 모든 이미지의 ID 수집
+        const imageIds = images.map(image => image.id);
+
+        // 모든 이미지에 대한 좋아요 상태를 한 번에 확인
+        const likedResponses = await axios.get(`http://localhost:8080/${userId}/images/liked`, {
+          params: { imageIds: imageIds.join(',') }
+        });
+
+        likedResponses.data.forEach(likeStatus => {
+          this.$store.commit('setLikeStatus', { imageId: likeStatus.imageId, liked: likeStatus.liked });
+        });
       } catch (error) {
-        console.error('이미지 로드 실패', error);
+        console.error('이미지 로드 실패', error.message); // 에러 메시지 출력
+        // 추가적인 에러 처리 로직 필요 시 여기에 추가
       }
     }
   },
-  created() {
-    const userId = this.getLoginUserId;
-    console.log("userID = ", userId);
-    this.fetchImages(userId);
+  watch: {
+    userId: {
+      immediate: true,
+      handler(newUserId) {
+        this.fetchImages(newUserId);
+      }
+    }
   }
 }
 </script>
