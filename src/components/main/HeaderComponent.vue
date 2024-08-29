@@ -5,7 +5,7 @@
         <img src="@/assets/image/home.png" link="#" class="homeLogo">
       </div>
       <div class="linkContainer">
-        <router-link to="#">갤러리 | </router-link>
+        <router-link :to="`/gallery/${loginUserId}`">갤러리 | </router-link>
         <router-link to="/follow">팔로우 | </router-link>
         <router-link to="#">마이페이지</router-link>
       </div>
@@ -14,7 +14,14 @@
 </template>
 
 <script>
-export default {};
+import { mapGetters } from 'vuex';
+export default {
+  computed: {
+    ...mapGetters({
+      loginUserId: 'getLoginUserId',
+    })
+  }
+};
 </script>
 
 <style scoped>
