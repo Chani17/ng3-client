@@ -14,16 +14,50 @@
 <script>
 export default {
   methods: {
-    login() {
+    async login() {
       const storedToken = localStorage.getItem('token');
       if (storedToken) {
-        //토큰이 있다면 바로 main으로 가게
+        // 토큰이 있다면 바로 main으로 가게
         this.$router.push('/main');
       } else {
-        window.location.href = //토큰이 없다면 토큰을 token을 발급받고 main에서 localStorage에 넣게
+        // OAuth2 인증 요청
+        window.location.href =
           'http://localhost:8080/oauth2/authorization/google';
       }
     },
+    async handleOAuth2Redirect() {
+      const code = this.getQueryParam('code');
+      if (code) {
+        try {
+          console.log('코드 발견:', code);
+          const response = await fetch(
+            `http://localhost:8080/login/success?code=${code}`
+          );
+          const result = await response.json(); // JSON 응답을 받음
+          console.log('응답:', result);
+
+          const jwtToken = result.token; // JSON에서 토큰 추출
+          console.log('JWT:', jwtToken);
+
+          // JWT를 localStorage에 저장
+          localStorage.setItem('token', jwtToken);
+
+          // 메인 페이지로 리디렉션
+          console.log('메인 페이지로 리디렉션 시작');
+          this.$router.push('/main');
+        } catch (error) {
+          console.error('JWT 발급 실패:', error);
+        }
+      }
+    },
+    getQueryParam(name) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(name);
+    },
+  },
+  mounted() {
+    // 컴포넌트가 마운트될 때 OAuth2 리디렉션 처리
+    this.handleOAuth2Redirect();
   },
 };
 </script>
