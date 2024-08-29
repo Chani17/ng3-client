@@ -47,6 +47,12 @@ import { mapActions, mapGetters, mapState } from 'vuex';
 
 export default {
   name: "GalleryView.vue",
+  props: {
+    userId: {
+      type: String,
+      reqired: true
+    }
+  },
   computed: {
     ...mapState(['currentIndex', 'isUserGallery', 'itemsPerPage']),
     ...mapGetters(['currentItems', 'getLoginUserId']),
