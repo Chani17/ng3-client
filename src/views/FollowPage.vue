@@ -54,7 +54,7 @@ export default {
   flex-direction: column;
   align-items: center;
   height: 75%;
-  padding-top: 16vh;
+  padding-top: 18vh;
 }
 
 .search-bar {
