@@ -35,6 +35,7 @@
 <script>
 import { mapGetters, mapActions } from "vuex";
 import RoomPasswordCheckModal from "@/components/main/RoomPasswordCheckModal.vue";
+import Swal from "sweetalert2";
 
 export default {
   computed: {
@@ -59,7 +60,13 @@ export default {
       const roomState = room.state;
 
       if (roomState == "START") {
-        alert("게임이 시작된 상태입니다.");
+        Swal.fire({
+            icon: "warning",
+            title: "입장 불가!",
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            text: "게임 진행 중으로 입장할 수 없습니다.",
+          });
         return;
       }
 
