@@ -1,9 +1,9 @@
+import axios from 'axios';
 import Vue from 'vue';
 import App from './App.vue';
+import apiClient from './apiClient';
 import { router } from './router';
 import { store } from './store/store';
-import axios from 'axios';
-import apiClient from './apiClient';
 
 Vue.prototype.$http = apiClient;
 Vue.config.productionTip = false;
