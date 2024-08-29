@@ -4,9 +4,14 @@ module.exports = defineConfig({
   transpileDependencies: true,
   devServer: {
     proxy: {
+      '/api': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+      },
       '/room': {
         target: 'http://localhost:8080',
         changeOrigin: true,
+        ws: true
       },
       '/userSearch': {
         target: 'http://localhost:8080',
@@ -25,5 +30,6 @@ module.exports = defineConfig({
         changeOrigin: true,
       },
     },
+    allowedHosts: 'all',
   },
 })

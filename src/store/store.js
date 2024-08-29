@@ -27,6 +27,7 @@ export const store = new Vuex.Store({
     followIds: [],
     following: [],
     pollingIntervalId: null, // 타이머 ID를 저장할 상태 추가
+    roomId: '',
   },
   getters: {
     sortedItems(state) {
@@ -50,6 +51,9 @@ export const store = new Vuex.Store({
       }
       const offset = page * 6;
       return state.filteredRoomList.slice(offset, offset + 6);
+    },
+    getRoomId(state) {
+        return state.roomId;
     },
     getPage(state) {
       return state.page;
@@ -110,6 +114,9 @@ export const store = new Vuex.Store({
     },
     setRoom(state, roomList) {
       state.roomList = roomList;
+    },
+    setRoomId(state, roomId) {
+        state.roomId = roomId;
     },
     setFilteredRoomList(state, filteredRoomList) {
       state.filteredRoomList = filteredRoomList;
@@ -183,7 +190,7 @@ export const store = new Vuex.Store({
   actions: {
     async fetchRoom({ commit, dispatch }) {
       try {
-        const response = await axios.get("http://localhost:8080/room");
+        const response = await axios.get("http://nggg.com:8080/room");
         commit("setRoom", response.data);
         dispatch("filterRooms"); // 데이터를 가져온 후 필터링을 초기화
         console.log("fetchRoom 실행")

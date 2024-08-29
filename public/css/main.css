@@ -1,0 +1,16 @@
+.content-body {
+    display: flex;
+    width: 100%;
+}
+
+.button-container {
+    width: 25%; /* Take up 25% of the width */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Space between buttons */
+}
+
+#canvas {
+    width: 75%; /* Take up 75% of the width */
+    border: 2px dashed black;
+}

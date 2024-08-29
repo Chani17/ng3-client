@@ -22,7 +22,7 @@ export default {
       } else {
         // OAuth2 인증 요청
         window.location.href =
-          'http://localhost:8080/oauth2/authorization/google';
+          'http://nggg.com:8080/oauth2/authorization/google';
       }
     },
     async handleOAuth2Redirect() {
