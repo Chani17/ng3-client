@@ -5,7 +5,7 @@
         <img src="@/assets/image/home.png" link="#" class="homeLogo">
       </div>
       <div class="linkContainer">
-        <router-link to="#">갤러리 | </router-link>
+        <router-link to="/gallery">갤러리 | </router-link>
         <router-link to="#">팔로우 | </router-link>
         <router-link to="#">마이페이지</router-link>
       </div>
