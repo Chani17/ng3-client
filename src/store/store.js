@@ -18,7 +18,7 @@ export const store = new Vuex.Store({
     nowRoom: "",
     // phj
     loginUserId: "", //현재 로그인된 유저 ID
-  	userSearch: "",
+    userSearch: "",
     users: [],
     followIds: [],
     following: [],
@@ -67,7 +67,7 @@ export const store = new Vuex.Store({
       if (state.userSearch.trim() === '') {
         return state.following.sort((a, b) => b.totalLikes - a.totalLikes);
       } else {
-      return state.users.filter(user => user.nickname === state.userSearch);
+        return state.users.filter(user => user.nickname === state.userSearch);
       }
     },
     getFollowing: (state) => (userId) => {
@@ -110,7 +110,7 @@ export const store = new Vuex.Store({
       state.loginUserId = loginUserId;
     },
     // 팔로우
-	  setUserSearch(state, search) {
+    setUserSearch(state, search) {
       state.userSearch = search;
     },
     setUsers(state, users) {
@@ -237,17 +237,17 @@ export const store = new Vuex.Store({
     async searchUsers({ commit, dispatch }, search) {
       commit('setUserSearch', search);
       try {
-        if(search.trim === '') {
+        if (search.trim === '') {
           await dispatch('fetchFollowing');
         } else {
-          const response = await axios.get('http://localhost:8080/usersearch', {params: {nickname: search}});
+          const response = await axios.get('http://localhost:8080/usersearch', { params: { nickname: search } });
           commit('setUsers', response.data);
         }
       } catch (error) {
         console.error("Error searching users", error);
       }
     },
-    async fetchFollowing({ commit , getters }) {
+    async fetchFollowing({ commit, getters }) {
       try {
         const loginEmail = getters.getLoginUserId;
         const response = await axios.get('http://localhost:8080/following', { params: { userEmail: loginEmail } });
