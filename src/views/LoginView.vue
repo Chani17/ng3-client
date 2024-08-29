@@ -3,16 +3,63 @@
     <!--하얀 배경-->
     <div class="sketchBookImg">
       <!--스케치북-->
-      <router-link to="#" class="loginBtn">
-        <img src="../assets/google.png" />
+      <div class="loginBtn" @click="login">
+        <img src="@/assets/image/google.png" />
         <span>구글 계정으로 시작하기</span>
-      </router-link>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-export default {};
+export default {
+  methods: {
+    async login() {
+      const storedToken = localStorage.getItem('token');
+      if (storedToken) {
+        // 토큰이 있다면 바로 main으로 가게
+        this.$router.push('/main');
+      } else {
+        // OAuth2 인증 요청
+        window.location.href =
+          'http://localhost:8080/oauth2/authorization/google';
+      }
+    },
+    async handleOAuth2Redirect() {
+      const code = this.getQueryParam('code');
+      if (code) {
+        try {
+          console.log('코드 발견:', code);
+          const response = await fetch(
+            `http://localhost:8080/login/success?code=${code}`
+          );
+          const result = await response.json(); // JSON 응답을 받음
+          console.log('응답:', result);
+
+          const jwtToken = result.token; // JSON에서 토큰 추출
+          console.log('JWT:', jwtToken);
+
+          // JWT를 localStorage에 저장
+          localStorage.setItem('token', jwtToken);
+
+          // 메인 페이지로 리디렉션
+          console.log('메인 페이지로 리디렉션 시작');
+          this.$router.push('/main');
+        } catch (error) {
+          console.error('JWT 발급 실패:', error);
+        }
+      }
+    },
+    getQueryParam(name) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(name);
+    },
+  },
+  mounted() {
+    // 컴포넌트가 마운트될 때 OAuth2 리디렉션 처리
+    this.handleOAuth2Redirect();
+  },
+};
 </script>
 
 <style scoped>
@@ -31,13 +78,13 @@ export default {};
 }
 
 .sketchBookImg {
-  background-image: url('../assets/sketchBookLogin.jpg');
+  background-image: url('@/assets/image/sketchBookLogin.jpg');
   background-size: 250%;
-  background-position: center; /* whiteboard 중앙에 배치 */
+  background-position: center;
   background-repeat: no-repeat;
   width: 100%;
   height: 100%;
-  position: relative; /* sketchBookImg를 기준으로 버튼 배치 */
+  position: relative;
   left: 10px;
 }
 
