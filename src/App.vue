@@ -7,12 +7,15 @@ export default {};
 </script>
 
 <style>
+* {
+  box-sizing: border-box; /*width와 height가 padding, margin포함*/
+}
 html,
 body {
-  width: 100%;
-  height: 100%;
   margin: 0;
   padding: 0;
+  width: 100vw;
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;

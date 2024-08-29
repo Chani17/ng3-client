@@ -1,0 +1,13 @@
+.base_container {
+  /*수정된 base_container [박혁진]*/
+  background-image: url('@/assets/image/baseContainer.jpg');
+  background-repeat: no-repeat;
+  background-size: auto;
+  background-position: center;
+  border-radius: 25px;
+  width: 1500px;
+  height: 900px;
+  min-width: 1500px;
+  min-height: 900px;
+  position: relative;
+}
