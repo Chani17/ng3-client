@@ -86,7 +86,7 @@ export default {
 
 <style scoped>
 .roomListContainer {
-  border: 3px solid #a55905;
+  border: 3px solid #985d1a;
   border-radius: 20px;
   box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1);
   max-width: 85%;
@@ -103,17 +103,17 @@ export default {
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 440px;
+  height: 450px;
 }
 
 .room-list {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  margin: 20px;
+  margin: 30px;
   gap: 20px;
   justify-content: space-between;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 }
 
 .roomBox {
@@ -121,8 +121,9 @@ export default {
   border: 2px solid #a55905;
   border-radius: 15px;
   background-color: #fffec8;
+  border-style: dashed;
   box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
-  padding: 10px 10px 0 10px;
+  padding: 15px 30px 0 30px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -177,7 +178,7 @@ export default {
 
 .pagingButtonGroup button {
   border: 2px solid #a55905;
-  background-color: #ffffff;
+  background-color: #FFF4D1;
   padding: 8px 16px;
   border-radius: 10px;
   cursor: pointer;
