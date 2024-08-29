@@ -6,7 +6,7 @@
       </div>
       <div class="linkContainer">
         <router-link to="#">갤러리 | </router-link>
-        <router-link to="#">팔로우 | </router-link>
+        <router-link to="/follow">팔로우 | </router-link>
         <router-link to="#">마이페이지</router-link>
       </div>
     </div>

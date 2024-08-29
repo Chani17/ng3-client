@@ -18,6 +18,10 @@ export const store = new Vuex.Store({
     nowRoom: "",
     // phj
     loginUserId: "", //현재 로그인된 유저 ID
+  	userSearch: "",
+    users: [],
+    followIds: [],
+    following: [],
     pollingIntervalId: null, // 타이머 ID를 저장할 상태 추가
   },
   getters: {
@@ -55,6 +59,20 @@ export const store = new Vuex.Store({
       //이걸로 이제 현재 로그인된 유저 아이디를 불러올 수 있음
       return state.loginUserId;
     },
+    // 팔로우
+    getFilteredUsers(state) {
+      if (!Array.isArray(state.following)) {
+        return [];
+      }
+      if (state.userSearch.trim() === '') {
+        return state.following.sort((a, b) => b.totalLikes - a.totalLikes);
+      } else {
+      return state.users.filter(user => user.nickname === state.userSearch);
+      }
+    },
+    getFollowing: (state) => (userId) => {
+      return state.followIds.includes(userId);
+    },
   },
   mutations: {
     setRoom(state, roomList) {
@@ -90,6 +108,30 @@ export const store = new Vuex.Store({
     // phj
     setLoginUserId(state, loginUserId) {
       state.loginUserId = loginUserId;
+    },
+    // 팔로우
+	  setUserSearch(state, search) {
+      state.userSearch = search;
+    },
+    setUsers(state, users) {
+      state.users = users;
+    },
+    setFollowUsers(state, users) {
+      if (Array.isArray(users)) {
+        state.following = users;
+        state.followIds = users.map(user => user.email);
+      } else {
+        state.following = [];
+        state.followIds = [];
+      }
+    },
+    setFollow(state, userId) {
+      if (!state.followIds.includes(userId)) {
+        state.followIds.push(userId);
+      }
+    },
+    setUnfollow(state, userId) {
+      state.followIds = state.followIds.filter(id => id !== userId);
     },
     setPollingInterval(state, intervalId) {
       state.pollingIntervalId = intervalId; // pollingIntervalId를 저장
@@ -191,5 +233,53 @@ export const store = new Vuex.Store({
     setNowRoom({ commit }, roomId) {
       commit("setNowRoom", roomId);
     },
-  },
+    // 팔로우
+    async searchUsers({ commit, dispatch }, search) {
+      commit('setUserSearch', search);
+      try {
+        if(search.trim === '') {
+          await dispatch('fetchFollowing');
+        } else {
+          const response = await axios.get('http://localhost:8080/usersearch', {params: {nickname: search}});
+          commit('setUsers', response.data);
+        }
+      } catch (error) {
+        console.error("Error searching users", error);
+      }
+    },
+    async fetchFollowing({ commit , getters }) {
+      try {
+        const loginEmail = getters.getLoginUserId;
+        const response = await axios.get('http://localhost:8080/following', { params: { userEmail: loginEmail } });
+        if (Array.isArray(response.data)) {
+          commit('setFollowUsers', response.data);
+        } else {
+          commit('setFollowUsers', []);
+        }
+      } catch (error) {
+        console.error("Error fetching followed users", error);
+        commit('setFollowUsers', []);
+      }
+    },
+    async followUser({ commit, getters, dispatch }, followEmail) {
+      try {
+        const loginEmail = getters.getLoginUserId;
+        await axios.post('http://localhost:8080/followuser', { userEmail: loginEmail, followingEmail: followEmail });
+        commit('setFollow', followEmail);
+        await dispatch('fetchFollowing');
+      } catch (error) {
+        console.error("Error add follow:", error);
+      }
+    },
+    async unfollowUser({ commit, getters, dispatch }, followEmail) {
+      try {
+        const loginEmail = getters.getLoginUserId;
+        await axios.post('http://localhost:8080/unfollowuser', { userEmail: loginEmail, followingEmail: followEmail });
+        commit('setUnfollow', followEmail);
+        await dispatch('fetchFollowing');
+      } catch (error) {
+        console.error("Error remove follow", error);
+      }
+    }
+  }
 });
