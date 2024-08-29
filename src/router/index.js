@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import GalleryView from "@/components/pages/gallery/GalleryView.vue";
+import GalleryView from "@/views/GalleryView.vue";
 Vue.use(VueRouter);
 
 export const router = new VueRouter({

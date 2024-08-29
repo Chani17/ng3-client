@@ -5,7 +5,7 @@
     <div class="light light-left"/>
     <div class="light light-right"/>
     <div class="gallery-stage">
-      <p class="gallery-name"><img src="@/assets/honor.png" alt="honor"/></p>
+      <p class="gallery-name"><img src="@/assets/image/honor.png" alt="honor"/></p>
       <div class="gallery-slide">
         <button class="gallery-nav-button left" @click="scrollLeft" v-if="currentIndex > 0"><span class="gallery-arrow left"></span></button>
         <div class="gallery-grid">
