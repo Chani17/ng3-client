@@ -5,8 +5,8 @@ import LoginView from '@/views/LoginView.vue';
 import MainPage from '@/views/MainPage.vue';
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import FollowPage from "@/views/FollowPage.vue";
-
+import FollowPage from '@/views/FollowPage.vue';
+import MyPage from '@/views/MyPage.vue';
 
 Vue.use(VueRouter);
 
@@ -26,8 +26,8 @@ export const router = new VueRouter({
       path: '/follow',
       name: 'FollowPage',
       component: FollowPage,
-	},
-	{
+    },
+    {
       path: '/main',
       name: 'MainPage',
       component: MainPage,
@@ -42,7 +42,12 @@ export const router = new VueRouter({
       path: '/gallery/:userId',
       name: 'GalleryView',
       component: GalleryView,
-      props: true
+      props: true,
+    },
+    {
+      path: '/myPage',
+      name: 'MyPage',
+      component: MyPage,
     },
     {
       path: '*',

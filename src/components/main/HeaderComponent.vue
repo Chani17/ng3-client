@@ -2,12 +2,12 @@
   <div class="headerContainer">
     <div class="router-box">
       <div class="homeLogoContainer">
-        <img src="@/assets/image/home.png" link="#" class="homeLogo">
+        <img src="@/assets/image/home.png" link="#" class="homeLogo" />
       </div>
       <div class="linkContainer">
         <router-link :to="`/gallery/${loginUserId}`">갤러리 | </router-link>
         <router-link to="/follow">팔로우 | </router-link>
-        <router-link to="#">마이페이지</router-link>
+        <router-link to="/mypage">마이페이지</router-link>
       </div>
     </div>
   </div>
@@ -19,8 +19,8 @@ export default {
   computed: {
     ...mapGetters({
       loginUserId: 'getLoginUserId',
-    })
-  }
+    }),
+  },
 };
 </script>
 
