@@ -118,7 +118,7 @@ export default {
         const userId = this.getLoginUserId;
         console.log('Fetching wearing components for user ID:', userId); // 사용자 ID 확인
         const response = await axios.get(
-          `http://localhost:8080/api/wearings/user/${userId}`,
+          `http://nggg.com:8080/api/wearings/user/${userId}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem('token')}`, // JWT를 Authorization 헤더에 추가
@@ -139,7 +139,7 @@ export default {
     async fetchAllComponents() {
       try {
         const response = await axios.get(
-          'http://localhost:8080/api/avatar-components',
+          'http://nggg.com:8080/api/avatar-components',
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem('token')}`, // JWT를 Authorization 헤더에 추가
@@ -206,20 +206,17 @@ export default {
         const userId = this.getLoginUserId;
 
         // 1. 기존 Wearing 데이터 삭제
-        await axios.delete(
-          `http://localhost:8080/api/wearings/user/${userId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('token')}`,
-            },
-          }
-        );
+        await axios.delete(`http://nggg.com:8080/api/wearings/user/${userId}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
         console.log('기존 Wearing 데이터 삭제 완료');
 
         // 2. tempWearing 데이터를 Wearing 테이블에 저장
         const savePromises = this.getTempWearing.map((item) => {
           return axios.post(
-            'http://localhost:8080/api/wearings',
+            'http://nggg.com:8080/api/wearings',
             {
               userId: userId,
               avatarComponent: {
