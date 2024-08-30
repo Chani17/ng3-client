@@ -1,41 +1,67 @@
 <template>
   <div class="gallery-container">
-    <div class="curtain curtain-left"/>
-    <div class="curtain curtain-right"/>
-    <div class="light light-left"/>
-    <div class="light light-right"/>
+    <div class="curtain curtain-left" />
+    <div class="curtain curtain-right" />
+    <div class="light light-left" />
+    <div class="light light-right" />
     <div class="gallery-stage">
-      <p class="gallery-name"><img src="@/assets/image/honor.png" alt="honor"/></p>
+      <p class="gallery-name">
+        <img src="@/assets/image/honor.png" alt="honor" />
+      </p>
       <div class="gallery-slide">
-        <button class="gallery-nav-button left" @click="scrollLeft" v-if="currentIndex > 0"><span class="gallery-arrow left"></span></button>
+        <button
+          class="gallery-nav-button left"
+          @click="scrollLeft"
+          v-if="currentIndex > 0"
+        >
+          <span class="gallery-arrow left"></span>
+        </button>
         <div class="gallery-grid">
-          <div class="gallery-item" v-for="(image, index) in safeCurrentItems" :key="index" :class="getMedal(currentIndex + index)">
+          <div
+            class="gallery-item"
+            v-for="(image, index) in safeCurrentItems"
+            :key="index"
+            :class="getMedal(currentIndex + index)"
+          >
             <div class="medal" v-if="currentIndex + index < 3"></div>
             <div class="image-frame">
-              <!-- 그림 위치 --><img :src="image.url" alt="Image"/>
+              <!-- 그림 위치 --><img :src="image.url" alt="Image" />
             </div>
             <div class="image-info">
-              <!-- 제시어 위치 --><p class="image-caption">{{image.title}}</p>
-              <!-- 좋아요 위치 --><button class="image-likes" @click="imageLike(image)" v-if="!isUserGallery">
-              <span class="heart" :class="{'liked': isLiked(image.id)}"></span>{{image.likeCount}}</button>
+              <!-- 제시어 위치 -->
+              <p class="image-caption">{{ image.title }}</p>
+              <!-- 좋아요 위치 --><button
+                class="image-likes"
+                @click="imageLike(image)"
+                v-if="!isUserGallery"
+              >
+                <span class="heart" :class="{ liked: isLiked(image.id) }"></span
+                >{{ image.likeCount }}
+              </button>
             </div>
           </div>
         </div>
-        <button class="gallery-nav-button right" @click="scrollRight" v-if="currentIndex + itemsPerPage < images.length"><span class="gallery-arrow right"></span></button>
+        <button
+          class="gallery-nav-button right"
+          @click="scrollRight"
+          v-if="currentIndex + itemsPerPage < images.length"
+        >
+          <span class="gallery-arrow right"></span>
+        </button>
       </div>
     </div>
     <div class="stage-steps">
       <div class="step step1">
-        <div class="tread"/>
-        <div class="riser"/>
+        <div class="tread" />
+        <div class="riser" />
       </div>
       <div class="step step2">
-        <div class="tread"/>
-        <div class="riser"/>
+        <div class="tread" />
+        <div class="riser" />
       </div>
       <div class="step step3">
-        <div class="tread"/>
-        <div class="riser"/>
+        <div class="tread" />
+        <div class="riser" />
       </div>
     </div>
   </div>
@@ -46,12 +72,12 @@ import axios from 'axios';
 import { mapActions, mapGetters, mapState } from 'vuex';
 
 export default {
-  name: "GalleryView",
+  name: 'GalleryView',
   props: {
     userId: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
   computed: {
     ...mapState(['currentIndex', 'isUserGallery', 'itemsPerPage']),
@@ -61,7 +87,7 @@ export default {
     },
     images() {
       return this.$store.state.images || [];
-    }
+    },
   },
   methods: {
     ...mapActions(['scrollLeft', 'scrollRight']),
@@ -79,29 +105,41 @@ export default {
         let likeCount;
         if (isLiked) {
           // 좋아요 취소
-          const response = await axios.delete(`http://localhost:8080/${image.id}/likes`, {
-            params: { userId },
-          });
+          const response = await axios.delete(
+            `http://nggg.com:8080/${image.id}/likes`,
+            {
+              params: { userId },
+            }
+          );
           likeCount = response.data;
         } else {
           // 좋아요
-          const response = await axios.post(`http://localhost:8080/${image.id}/likes`, null, {
-            params: { userId },
-          });
+          const response = await axios.post(
+            `http://nggg.com:8080/${image.id}/likes`,
+            null,
+            {
+              params: { userId },
+            }
+          );
           likeCount = response.data;
         }
 
         // 상태 업데이트
         this.$store.commit('updateLikeCount', { imageId: image.id, likeCount });
-        this.$store.commit('setLikeStatus', { imageId: image.id, liked: !isLiked });
+        this.$store.commit('setLikeStatus', {
+          imageId: image.id,
+          liked: !isLiked,
+        });
       } catch (error) {
-        console.error("좋아요 요청 오류:", error);
+        console.error('좋아요 요청 오류:', error);
       }
     },
     async fetchImages(userId) {
       try {
         // 이미지 데이터를 먼저 가져옴
-        const response = await axios.get(`http://localhost:8080/${userId}/images`);
+        const response = await axios.get(
+          `http://nggg.com:8080/${userId}/images`
+        );
 
         const images = response.data;
 
@@ -109,31 +147,37 @@ export default {
         this.$store.commit('setImages', images);
 
         // 모든 이미지의 ID 수집
-        const imageIds = images.map(image => image.id);
+        const imageIds = images.map((image) => image.id);
 
         // 모든 이미지에 대한 좋아요 상태를 한 번에 확인
-        const likedResponses = await axios.get(`http://localhost:8080/${userId}/images/liked`, {
-          params: { imageIds: imageIds.join(',') }
-        });
+        const likedResponses = await axios.get(
+          `http://nggg.com:8080/${userId}/images/liked`,
+          {
+            params: { imageIds: imageIds.join(',') },
+          }
+        );
 
-        likedResponses.data.forEach(likeStatus => {
-          this.$store.commit('setLikeStatus', { imageId: likeStatus.imageId, liked: likeStatus.liked });
+        likedResponses.data.forEach((likeStatus) => {
+          this.$store.commit('setLikeStatus', {
+            imageId: likeStatus.imageId,
+            liked: likeStatus.liked,
+          });
         });
       } catch (error) {
         console.error('이미지 로드 실패', error.message); // 에러 메시지 출력
         // 추가적인 에러 처리 로직 필요 시 여기에 추가
       }
-    }
+    },
   },
   watch: {
     userId: {
       immediate: true,
       handler(newUserId) {
         this.fetchImages(newUserId);
-      }
-    }
-  }
-}
+      },
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -155,8 +199,9 @@ export default {
   position: absolute;
   top: 0;
   z-index: 1;
-  background: linear-gradient(to right, #8B0000 25%, #B22222 50%, #8B0000 75%);
-  box-shadow: inset -10px 0 20px rgba(0, 0, 0, 0.5), inset 10px 0 20px rgba(0, 0, 0, 0.5);
+  background: linear-gradient(to right, #8b0000 25%, #b22222 50%, #8b0000 75%);
+  box-shadow: inset -10px 0 20px rgba(0, 0, 0, 0.5),
+    inset 10px 0 20px rgba(0, 0, 0, 0.5);
 }
 
 .curtain-left {
@@ -193,7 +238,11 @@ export default {
   width: 150px;
   height: 150px;
   z-index: 2;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0) 70%);
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.6) 0%,
+    rgba(255, 255, 255, 0) 70%
+  );
   filter: drop-shadow(0 0 60px rgba(255, 255, 255, 0.6));
   pointer-events: none;
 }
@@ -304,15 +353,15 @@ export default {
 }
 
 .gold-medal .image-frame {
-  border: 5px solid #FFD700;
+  border: 5px solid #ffd700;
 }
 
 .silver-medal .image-frame {
-  border: 5px solid #C0C0C0;
+  border: 5px solid #c0c0c0;
 }
 
 .bronze-medal .image-frame {
-  border: 5px solid #CD7F32;
+  border: 5px solid #cd7f32;
 }
 
 .medal {
@@ -333,19 +382,31 @@ export default {
 }
 
 .gold-medal .medal {
-  background: radial-gradient(circle at center, #ffd700, gold); /* 금속 질감의 그라데이션 */
+  background: radial-gradient(
+    circle at center,
+    #ffd700,
+    gold
+  ); /* 금속 질감의 그라데이션 */
   border: 3px solid gold; /* 약간 어두운 금색 테두리 */
   box-shadow: 0 0 15px rgba(255, 215, 0, 0.8); /* 금색의 부드러운 그림자 */
 }
 
 .silver-medal .medal {
-  background: radial-gradient(circle at center, #c0c0c0, #a9a9a9); /* 금속 질감의 그라데이션 */
+  background: radial-gradient(
+    circle at center,
+    #c0c0c0,
+    #a9a9a9
+  ); /* 금속 질감의 그라데이션 */
   border: 3px solid #b0b0b0; /* 약간 어두운 은색 테두리 */
   box-shadow: 0 0 15px rgba(192, 192, 192, 0.8); /* 은색의 부드러운 그림자 */
 }
 
 .bronze-medal .medal {
-  background: radial-gradient(circle at center, #cd7f32, #b57d3d); /* 금속 질감의 그라데이션 */
+  background: radial-gradient(
+    circle at center,
+    #cd7f32,
+    #b57d3d
+  ); /* 금속 질감의 그라데이션 */
   border: 3px solid #b07d3d; /* 약간 어두운 청동색 테두리 */
   box-shadow: 0 0 15px rgba(205, 127, 50, 0.8); /* 청동색의 부드러운 그림자 */
 }
@@ -357,15 +418,15 @@ export default {
 }
 
 .gold-medal .medal::before {
-  content: "1";
+  content: '1';
 }
 
 .silver-medal .medal::before {
-  content: "2";
+  content: '2';
 }
 
 .bronze-medal .medal::before {
-  content: "3";
+  content: '3';
 }
 
 .gallery-nav-button {
@@ -429,11 +490,17 @@ export default {
   margin-bottom: 10px;
 }
 
-.step1 { width: 60%; }
+.step1 {
+  width: 60%;
+}
 
-.step2 { width: 70%; }
+.step2 {
+  width: 70%;
+}
 
-.step3 { width: 80%; }
+.step3 {
+  width: 80%;
+}
 
 .tread {
   height: 20px;

@@ -31,7 +31,7 @@ export default {
         try {
           console.log('코드 발견:', code);
           const response = await fetch(
-            `http://localhost:8080/login/success?code=${code}`
+            `http://nggg.com:8080/login/success?code=${code}`
           );
           const result = await response.json(); // JSON 응답을 받음
           console.log('응답:', result);
