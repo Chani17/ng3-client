@@ -1,3 +1,4 @@
+<!-- [박혁진]: 닉네임 변경이 가능한 컴포넌트 작성-->
 <template>
   <div class="temp_border">
     <div class="nick">박혁진</div>

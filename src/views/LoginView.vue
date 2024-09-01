@@ -1,3 +1,4 @@
+<!-- 박혁진 :Oauth2 로그인 페이지 작성 -->
 <template>
   <div class="whiteboard">
     <!--하얀 배경-->

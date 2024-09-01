@@ -1,3 +1,4 @@
+<!-- 박혁진: 마이페이지 기능 확인 가능한 vue 컴포넌트 -->
 <template>
   <div class="base_container">
     <div class="myPage_frame">

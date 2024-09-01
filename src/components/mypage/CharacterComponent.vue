@@ -1,3 +1,4 @@
+<!--[박혁진] : 아바타 커스터 마이징이 가능한 컴포넌트 작성-->
 <template>
   <div class="temp_border">
     <div class="customizing">
