@@ -1,3 +1,4 @@
+<!-- [김찬희] : 게임 방의 채팅 기능 구현 -->
 <template>
   <div class="chatRoomContainer">
     <div id="messages" ref="messageBox">

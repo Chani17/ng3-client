@@ -1,3 +1,4 @@
+<!-- [김찬희] : fabric.js를 이용한 canvas setting 및 실시간 그림 그리는 기능 구현 -->
 <template>
   <div id="content-body">
     <div id="button-container">

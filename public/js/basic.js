@@ -1,3 +1,7 @@
+/**
+ * [김찬희] : 실시간 그림 그리기 기능을 구현한 WebSocket과 fabric.js 관련 코드 작성
+ */
+
 document.addEventListener('DOMContentLoaded', function() {
     let canvas;
     const socket = new WebSocket('ws://nggg.com:8080/canvas');

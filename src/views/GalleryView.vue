@@ -134,6 +134,8 @@ export default {
         console.error('좋아요 요청 오류:', error);
       }
     },
+
+    // [김찬희] : 저장되어 있는 이미지들 가져오기
     async fetchImages(userId) {
       try {
         // 이미지 데이터를 먼저 가져옴
