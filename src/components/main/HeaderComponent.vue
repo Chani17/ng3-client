@@ -1,3 +1,5 @@
+<!-- 이하린 : 메인 페이지 헤더 컴포넌트 작업 -->
+
 <template>
   <div class="headerContainer">
     <div class="router-box">

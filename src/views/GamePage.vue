@@ -1,3 +1,6 @@
+<!-- 이하린 : 게임 페이지 컴포넌트 생성시 (게임방 입장) 검증 요청 처리 작업-->
+<!-- 김찬희 : 게임 페이지 하위 컴포넌트 작업 및 리팩토링 -->
+
 <template>
   <div class="base_container">
     <ExitGameComponent></ExitGameComponent>
@@ -35,7 +38,6 @@ export default {
   },
   created() {
     const roomId = this.roomId;
-    // const userId = this.$store.getters.getLoginUserId;
     const password = this.password;
     this.setRoomId(this.roomId);
     this.requestEnterGamePage(roomId, password);
@@ -53,7 +55,7 @@ export default {
   methods: {
     ...mapMutations(['setRoomId']),
 
-
+    // 방 입장시 검증을 요청하는 함수
     async requestEnterGamePage(roomId, password) {
       try {
         const userId = this.$store.getters.getLoginUserId;

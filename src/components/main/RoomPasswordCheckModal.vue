@@ -1,3 +1,5 @@
+<!-- 이하린 : 비밀번호가 있는 방을 클릭했을 때 활성화 되는 비밀번호 체크 모달 컴포넌트 -->
+
 <template>
   <div class="passwordCheckModalContainer">
     <div class="modal-content">

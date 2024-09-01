@@ -1,3 +1,6 @@
+<!-- 이하린 : 메인 페이지 컴포넌트 작업 -->
+<!-- 박혁진 : 메인 페이지 내 로그인 유저 정보 세팅 작업-->
+
 <template>
   <div class="base_container">
     <HeaderComponent></HeaderComponent>
@@ -18,6 +21,7 @@ import RoomList from '@/components/main/RoomList.vue';
 
 export default {
   created() {
+    // 메인 페이지 컴포넌트 생성과 동시에 서버로 방 목록을 요청하는 함수를 실행
     this.$store.dispatch('startPolling');
   },
   mounted() {

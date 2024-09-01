@@ -1,3 +1,5 @@
+<!-- 이하린 : 메인 페이지에서 호출하는 방 목록 컴포넌트 -->
+
 <template>
   <div class="roomListContainer">
     <div class="list-box">
@@ -12,7 +14,6 @@
           <div>진행 상태 : {{ room.state }}</div>
           <div class="roomBoxFooter">
             <div>{{ room.users.length }} / 6</div>
-            <!-- <div>{{ room.users.email }}</div> -->
             <div v-if="room.password">🔒</div>
           </div>
         </div>
@@ -62,12 +63,12 @@ export default {
 
       if (roomState == "START") {
         Swal.fire({
-            icon: "warning",
-            title: "입장 불가!",
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            text: "게임 진행 중으로 입장할 수 없습니다.",
-          });
+          icon: "warning",
+          title: "입장 불가!",
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          text: "게임 진행 중으로 입장할 수 없습니다.",
+        });
         return;
       }
 
@@ -179,7 +180,7 @@ export default {
 
 .pagingButtonGroup button {
   border: 2px solid #a55905;
-  background-color: #FFF4D1;
+  background-color: #fff4d1;
   padding: 8px 16px;
   border-radius: 10px;
   cursor: pointer;

@@ -1,3 +1,5 @@
+<!-- 이하린 : 메인 페이지 중간에 위치한 방 만들기 버튼 및 검색 컴포넌트 호출부 -->
+
 <template>
   <div class="middleContainer">
     <button class="createRoomButton" @click="showCreateRoomModal">

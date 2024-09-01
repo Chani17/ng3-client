@@ -1,3 +1,8 @@
+// 이하린 : 메인 페이지의 방 목록 요청, 방 목록 페이지네이션, 방 목록 검색, 모달창 관리 작업 (221~313번 라인 로직 관련)
+// 박혁진
+// 김찬희
+// 한수민
+
 import axios from 'axios';
 import Vue from 'vue';
 import Vuex from 'vuex';
@@ -208,6 +213,11 @@ export const store = new Vuex.Store({
         commit('SET_INDEX', state.currentIndex - state.itemsPerPage);
       }
     },
+    scrollRight({ commit, state }) {
+      if (state.currentIndex + state.itemsPerPage < state.images.length) {
+        commit('SET_INDEX', state.currentIndex + state.itemsPerPage);
+      }
+    },
     async fetchRoom({ commit, dispatch }) {
       try {
         const response = await axios.get('http://nggg.com:8080/room');
@@ -216,11 +226,6 @@ export const store = new Vuex.Store({
         console.log('fetchRoom 실행');
       } catch (error) {
         console.error('에러 발생', error);
-      }
-    },
-    scrollRight({ commit, state }) {
-      if (state.currentIndex + state.itemsPerPage < state.images.length) {
-        commit('SET_INDEX', state.currentIndex + state.itemsPerPage);
       }
     },
     filterRooms({ commit, state }) {

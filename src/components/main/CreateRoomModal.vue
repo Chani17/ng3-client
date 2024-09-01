@@ -1,3 +1,5 @@
+<!-- 이하린 : 방 생성 모달 컴포넌트 작업 -->
+
 <template>
   <div class="createRoomModal">
     <input type="text" placeholder="방제목" id="title" ref="titleInput" />

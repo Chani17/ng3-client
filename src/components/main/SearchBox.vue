@@ -1,3 +1,5 @@
+<!-- 이하린 : 방 제목 혹은 방 내부의 유저 닉네임으로 검색하는 방 검색 컴포넌트 -->
+
 <template>
   <div class="searchBox">
     <select :value="searchType" @change="updateSearchType">
