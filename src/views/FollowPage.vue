@@ -1,3 +1,4 @@
+<!-- 한수민: 팔로우 페이지 컴포넌트 구현 -->
 <template>
   <div class="base_container">
     <div class="follow-page">

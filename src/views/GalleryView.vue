@@ -1,3 +1,4 @@
+<!-- 한수민: 갤러리 페이지 컴포넌트 구현 -->
 <template>
   <div class="gallery-container">
     <div class="curtain curtain-left" />
